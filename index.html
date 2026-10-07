@@ -614,7 +614,6 @@
 <div class="footer-links">
 <a href="#gallery">프롬프트 모음</a>
 <a href="#" onclick="showTab('guide');return false;">사용법 &amp; AI 활용팁</a>
-<a href="#checklist">확인 체크리스트</a>
 </div>
 <div class="foot-note">© 2026 대학도서관 AI 프롬프트 필드 가이드. 실무 참고용 아카이브입니다.</div>
 </div>
@@ -637,6 +636,10 @@
       chips.forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
       applyFilter(chip.dataset.filter);
+      const gallery = document.getElementById('gallery');
+      if(gallery){
+        setTimeout(()=>gallery.scrollIntoView({behavior:'smooth', block:'start'}), 30);
+      }
     });
   });
 
@@ -793,7 +796,7 @@ document.querySelectorAll('.cover-card').forEach(card=>{card.addEventListener('c
 document.getElementById('closePrompt').onclick=()=>dlg.close();dlg.addEventListener('click',e=>{if(e.target===dlg){const r=dlg.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dlg.close();}});
 document.getElementById('viewOriginal').onclick=()=>render('example');document.getElementById('viewExample').onclick=()=>render('input');
 async function copyText(text){text=stripBrackets(text);try{await navigator.clipboard.writeText(text);}catch(e){const t=document.createElement('textarea');t.value=text;dlg.append(t);t.select();const ok=document.execCommand('copy');t.remove();if(!ok){render(mode);return;}}}
-document.getElementById('bottomCopy').onclick=()=>copyText(mode==='example'?exampleText():enteredText());
+document.getElementById('bottomCopy').onclick=()=>copyText(mode==='example'?exampleText():enteredText()).then(()=>showCopyToast());
 
 const editButton=document.getElementById('editTemplate');
 editButton.onclick=()=>{document.querySelector('#promptDialog .modal-tools').hidden=true;document.getElementById('templateEditor').value=promptCatalog[current].prompt;document.getElementById('templateEditorWrap').hidden=false;preview.hidden=true;document.getElementById('bottomCopy').hidden=true;editButton.hidden=true;};
