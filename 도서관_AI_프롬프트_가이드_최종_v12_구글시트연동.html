@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>도서관 AI 프롬프트 필드 가이드 | 사서를 위한 프롬프트 아카이브</title>
+<style>
+  :root{
+    --bg:#F6FBFB;
+    --bg-soft:#EFF8F7;
+    --card:#FFFFFF;
+    --card-hover:#F2FBFA;
+    --accent:#1CB8AE;
+    --accent-strong:#0F9C93;
+    --accent-pink:#E85FA4;
+    --accent-pink-strong:#D43F8C;
+    --text:#223332;
+    --text-dim:#6E807E;
+    --border:#DCEEEC;
+    --tag-doc:#D43F8C;
+    --tag-doc-bg:#FDEBF4;
+    --tag-service:#0F9C93;
+    --tag-service-bg:#E6F7F5;
+    --tag-promo:#B8811A;
+    --tag-promo-bg:#FFF4D8;
+    --tag-data:#716DB6;
+    --tag-data-bg:#F1F0FB;
+    --tag-notice:#1CB8AE;
+    --tag-notice-bg:#E6F7F5;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Nanum Gothic', sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+  }
+  a{color:inherit;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  /* NAV */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    background:#FFFDF8;
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1180px;margin:0 auto;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;letter-spacing:-0.02em;}
+  .brand .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);display:inline-block;}
+  .nav-links{display:flex;gap:22px;font-size:14px;color:var(--text-dim);}
+  .nav-links a{text-decoration:none;transition:color .2s;}
+  .nav-links a:hover{color:var(--accent);}
+  .nav-cta{background:var(--accent);color:#FFFDF8;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;}
+  .burger{display:none;background:none;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 10px;cursor:pointer;}
+
+  /* HERO */
+  .hero{padding:88px 0 64px;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{
+    content:"";position:absolute;top:-200px;left:50%;transform:translateX(-50%);
+    width:900px;height:500px;background:radial-gradient(circle, rgba(217,104,74,0.16), transparent 70%);
+    z-index:0;
+  }
+  .hero-inner{position:relative;z-index:1;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--bg-soft);border:1px solid var(--border);
+    padding:6px 14px;border-radius:999px;font-size:12.5px;color:var(--accent);
+    margin-bottom:22px;font-weight:600;letter-spacing:.02em;
+  }
+  h1.headline{
+    font-size:clamp(28px,4.6vw,48px);
+    font-weight:800;letter-spacing:-0.03em;margin:0 0 18px;
+  }
+  h1.headline .accent{color:var(--accent);}
+  .sub{color:var(--text-dim);font-size:17px;max-width:620px;margin:0 auto 34px;}
+  .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .book-art{position:relative;width:170px;height:118px;margin:0 auto 26px;}
+  .book-art-glow{position:absolute;inset:-30px;background:radial-gradient(circle,rgba(28,184,174,.25),transparent 68%);filter:blur(2px);}
+  .book3d{position:relative;width:100%;height:100%;transform:rotateX(8deg);transform-style:preserve-3d;animation:bookFloat 4.5s ease-in-out infinite;}
+  @keyframes bookFloat{0%,100%{transform:rotateX(8deg) translateY(0);}50%{transform:rotateX(8deg) translateY(-7px);}}
+  .book-cover-left,.book-cover-right{position:absolute;top:0;width:50%;height:100%;border-radius:4px 10px 10px 4px;box-shadow:0 14px 26px rgba(15,156,147,.28);}
+  .book-cover-left{left:0;background:linear-gradient(135deg,var(--accent),var(--accent-strong));border-radius:10px 4px 4px 10px;transform:perspective(600px) rotateY(18deg);transform-origin:right center;}
+  .book-cover-right{right:0;background:linear-gradient(135deg,var(--accent-pink),var(--accent-pink-strong));transform:perspective(600px) rotateY(-18deg);transform-origin:left center;display:flex;align-items:flex-end;justify-content:flex-end;padding:8px;}
+  .book-spark{font-size:14px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15));}
+  .book-spine{position:absolute;left:50%;top:-4px;width:6px;height:calc(100% + 8px);transform:translateX(-50%);background:linear-gradient(180deg,#fff,var(--border));border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.12);}
+  .book-page{position:absolute;top:6px;left:50%;width:40%;height:88%;background:#fff;border:1px solid var(--border);border-radius:2px 8px 8px 2px;transform-origin:left center;box-shadow:2px 2px 6px rgba(0,0,0,.06);}
+  .book-page-3{transform:translateX(-4%) rotateY(-6deg);opacity:.55;}
+  .book-page-2{transform:translateX(-2%) rotateY(-3deg);opacity:.8;}
+  .book-page-1{transform:translateX(0) rotateY(0deg);}
+  .book-bookmark{position:absolute;right:18%;top:-10px;width:10px;height:38px;background:linear-gradient(180deg,#FFD166,#F2A93B);clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%);box-shadow:0 3px 6px rgba(0,0,0,.15);}
+  @media(max-width:480px){.book-art{width:130px;height:90px;}}
+  .btn-primary{
+    background:var(--accent);color:#FFFDF8;padding:14px 26px;border-radius:10px;
+    font-weight:700;font-size:15px;text-decoration:none;border:none;cursor:pointer;
+    transition:transform .15s, background .2s;
+  }
+  .btn-primary:hover{background:var(--accent-strong);transform:translateY(-1px);}
+  .btn-ghost{
+    background:transparent;border:1px solid var(--border);color:var(--text);
+    padding:14px 26px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;
+  }
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+  .stats{display:flex;justify-content:center;gap:48px;margin-top:56px;flex-wrap:wrap;}
+  .stat b{display:block;font-size:26px;color:var(--accent);}
+  .stat span{font-size:13px;color:var(--text-dim);}
+
+  /* FILTER */
+  .filter-bar{
+    display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:0 0 40px;
+  }
+  .chip{
+    background:var(--bg-soft);border:1px solid var(--border);color:var(--text-dim);
+    padding:9px 18px;border-radius:999px;font-size:13.5px;cursor:pointer;font-weight:600;
+    transition:all .2s;
+  }
+  .chip:hover{color:var(--text);}
+  .chip.active{background:var(--accent);color:#FFFDF8;border-color:var(--accent);}
+
+  /* SECTION HEADER */
+  section{padding:20px 0 70px;}
+  .section-head{text-align:center;max-width:600px;margin:0 auto 40px;}
+  .section-head h2{font-size:clamp(22px,3vw,30px);margin:0 0 10px;font-weight:800;letter-spacing:-0.02em;}
+  .section-head p{color:var(--text-dim);font-size:15px;margin:0;}
+
+  /* CARD GRID */
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;
+  }
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:26px;display:flex;flex-direction:column;gap:16px;
+    transition:transform .18s, border-color .18s, background .18s;
+  }
+  .card{box-shadow:0 2px 10px rgba(60,52,47,0.04);}
+  .card:hover{transform:translateY(-4px);border-color:var(--accent);background:var(--card-hover);box-shadow:0 10px 24px rgba(60,52,47,0.08);}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .tag{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:6px;white-space:nowrap;letter-spacing:.01em;}
+  .tag.doc{background:var(--tag-doc-bg);color:var(--tag-doc);}
+  .tag.service{background:var(--tag-service-bg);color:var(--tag-service);}
+  .tag.promo{background:var(--tag-promo-bg);color:var(--tag-promo);}
+  .tag.data{background:var(--tag-data-bg);color:var(--tag-data);}
+  .tag.notice{background:var(--tag-notice-bg);color:var(--tag-notice);}
+  .card h3{margin:0;font-size:17px;font-weight:700;letter-spacing:-0.01em;}
+  .card .desc{color:var(--text-dim);font-size:13.5px;margin:-8px 0 0;}
+  .prompt-box{
+    background:#FAF8F2;border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;font-size:13.5px;color:#4a423c;line-height:1.65;
+    max-height:180px;overflow-y:auto;white-space:pre-wrap;font-family:'SFMono-Regular',Consolas,monospace;
+  }
+  .card-meta{font-size:12.5px;color:var(--text-dim);}
+  .card-meta b{color:var(--text);font-weight:600;}
+  .checklist{display:flex;flex-wrap:wrap;gap:6px;font-size:11.5px;color:var(--text-dim);}
+  .checklist span{border:1px solid var(--border);padding:3px 8px;border-radius:6px;}
+  .card-actions{display:flex;gap:10px;margin-top:auto;}
+  .copy-btn{
+    flex:1;background:var(--accent);color:#FFFDF8;border:none;border-radius:8px;
+    padding:11px 14px;font-weight:700;font-size:13.5px;cursor:pointer;transition:background .2s;
+  }
+  .copy-btn:hover{background:var(--accent-strong);}
+  .copy-btn.copied{background:#3F8F7C;}
+  #copyToast{position:fixed;left:50%;top:50%;bottom:auto;transform:translate(-50%,-50%) scale(.96);z-index:9999;padding:10px 16px;border-radius:8px;background:rgba(35,31,28,.92);color:#fff;font-size:13px;line-height:1.4;box-shadow:0 4px 14px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;}#copyToast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+  /* HOW IT WORKS */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;}
+  .step{background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;padding:24px;}
+  .step .num{
+    width:34px;height:34px;border-radius:9px;background:var(--accent);color:#FFFDF8;
+    display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:14px;
+  }
+  .step h4{margin:0 0 8px;font-size:15.5px;}
+  .step p{margin:0;color:var(--text-dim);font-size:13.5px;}
+
+  /* CTA BAND */
+  .cta-band{
+    background:linear-gradient(135deg, rgba(217,104,74,0.12), rgba(184,129,26,0.06));
+    border:1px solid var(--border);border-radius:22px;
+    padding:56px 32px;text-align:center;
+  }
+  .cta-band h2{font-size:clamp(22px,3vw,30px);margin:0 0 14px;font-weight:800;}
+  .cta-band p{color:var(--text-dim);margin:0 0 28px;}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--border);padding:36px 0;margin-top:20px;}
+  .footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+  .footer-links{display:flex;gap:18px;font-size:13px;color:var(--text-dim);}
+  .foot-note{font-size:12.5px;color:#9a938c;}
+
+  @media (max-width:760px){
+    .nav-links{display:none;}
+    .burger{display:inline-block;}
+    .hero{padding:64px 0 40px;}
+  }
+
+  /* ===== Tab: 사용법 & AI 활용팁 ===== */
+  .tab-content{display:none;}
+  .tab-content.active{display:block;animation:tabFadeIn .5s ease;}
+  #tab-guide.active{animation:tabSlideIn .55s cubic-bezier(.22,1,.36,1);}
+  @keyframes tabFadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes tabSlideIn{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes cardPulse{
+    0%{box-shadow:0 0 0 0 rgba(217,104,74,0.45);border-color:var(--accent);}
+    70%{box-shadow:0 0 0 14px rgba(217,104,74,0);border-color:var(--accent);}
+    100%{box-shadow:0 0 0 0 rgba(217,104,74,0);}
+  }
+  .card.spotlight{animation:cardPulse 1.1s ease-out;}
+  .section-label{
+    display:inline-block;font-size:12.5px;font-weight:800;color:var(--accent);
+    letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;
+  }
+  .guide-hero{padding:56px 0 36px;text-align:center;}
+  .guide-hero h1{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-0.02em;margin:0 0 14px;}
+  .guide-wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+  .section-desc{color:var(--text-dim);font-size:14px;margin:0 0 24px;}
+  .card-list{display:flex;flex-direction:column;gap:14px;}
+  .item{
+    border:1px solid var(--border);border-radius:14px;padding:20px 22px;background:var(--card);
+    display:flex;gap:16px;
+  }
+  .item .icon{
+    flex:none;width:38px;height:38px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;font-size:18px;
+  }
+  .item.warn .icon{background:var(--tag-notice-bg);color:var(--tag-notice);}
+  .item.tip .icon{background:var(--tag-service-bg);color:var(--tag-service);}
+  .item h4{margin:0 0 6px;font-size:15.5px;}
+  .item p{margin:0;color:var(--text-dim);font-size:13.8px;}
+  .item .src{display:block;margin-top:8px;font-size:11.5px;color:#8FA3A1;}
+  .divider{height:1px;background:var(--border);margin:8px 0 0;}
+  .callout{
+    background:linear-gradient(135deg, rgba(217,104,74,0.10), rgba(184,129,26,0.05));
+    border:1px solid var(--border);border-radius:18px;padding:28px;margin-top:10px;
+  }
+  .callout h3{margin:0 0 10px;font-size:16px;}
+  .callout p{margin:0;color:var(--text-dim);font-size:14px;}
+  .tab-btn{
+    background:transparent;border:none;color:var(--text-dim);font-size:14px;cursor:pointer;
+    font-family:inherit;padding:0;transition:color .2s;
+  }
+  .tab-btn:hover{color:var(--accent);}
+  .tab-btn.active-tab{color:var(--accent);font-weight:700;}
+
+
+  .card{position:relative}.settings-gear{position:absolute;top:10px;right:10px;width:25px;height:25px;border:0;border-radius:50%;background:rgba(255,255,255,.8);color:#806b5c;font-size:15px;line-height:25px;padding:0;cursor:pointer;z-index:3;opacity:.75}.settings-gear:hover{opacity:1;background:#fff}.settings-gear::after{content:'설정';position:absolute;right:0;top:29px;padding:3px 6px;border-radius:4px;background:#3b332e;color:#fff;font-size:11px;line-height:1;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}.settings-gear:hover::after,.settings-gear:focus-visible::after{opacity:1}#settingsDialog{width:min(390px,90vw);border:1px solid var(--border);border-radius:14px;padding:0;background:var(--bg);color:var(--text)}#settingsDialog::backdrop{background:#201a1666;backdrop-filter:blur(2px);will-change:backdrop-filter;transform:translateZ(0)}#settingsDialog{transform:translateZ(0);contain:layout paint}.settings-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--border)}.settings-head h3{margin:0;font-size:17px}.settings-body{padding:18px}.settings-body label{display:block;font-weight:700;font-size:13px}.settings-body input{width:100%;box-sizing:border-box;margin-top:7px;padding:10px;border:1px solid var(--border);border-radius:7px;font:inherit}.settings-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.settings-actions button{padding:8px 12px;border:1px solid var(--border);border-radius:7px;background:#fff;cursor:pointer;font:inherit}.settings-actions .save{background:#1CB8AE;color:#fff;border-color:#1CB8AE}.settings-actions .danger{margin-right:auto;color:#b33b30;border-color:#F0B8D6}</style>
+<style>
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.cat-section{margin-bottom:46px}.cat-head{margin-bottom:18px;scroll-margin-top:96px}.section-label{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}.cat-head h3{margin:0 0 8px;font-size:21px;color:var(--text)}.section-desc{margin:0 0 12px;color:var(--text-dim);font-size:14.5px;line-height:1.6}.feature-list{margin:0 0 20px;padding-left:0;list-style:none;display:grid;gap:8px}.feature-list li{position:relative;padding-left:20px;font-size:13.5px;line-height:1.6;color:var(--text)}.feature-list li:before{content:'·';position:absolute;left:4px;font-weight:700;color:var(--accent)}.cat-callout{margin-top:16px;padding:14px 18px;border:1px solid var(--border);border-radius:12px;background:#EFFBFA}.cat-callout h4{margin:0 0 6px;font-size:14px}.cat-callout p{margin:0;font-size:13px;line-height:1.6;color:var(--text-dim)}.level-nav{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}.level-card{text-align:left;border:1px solid var(--border);border-radius:16px;padding:22px 20px;min-height:168px;background:white;cursor:pointer;display:flex;flex-direction:column;gap:9px;font:inherit;color:var(--text);transition:transform .15s,box-shadow .15s,border-color .15s}.level-card:hover{transform:translateY(-3px);box-shadow:0 10px 22px #3c342f14}.level-card.active{border-color:var(--accent-strong);box-shadow:0 0 0 2px var(--accent-strong) inset}.level-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px}.level-eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.03em;color:var(--text-dim);text-transform:uppercase}.level-title{font-size:17px;font-weight:700}.level-desc{font-size:13px;color:var(--text-dim);line-height:1.55}@media(max-width:960px){.level-nav{grid-template-columns:repeat(3,1fr)}}@media(max-width:640px){.level-nav{grid-template-columns:repeat(2,1fr)}.level-card{min-height:unset}}
+.gallery-divider{display:flex;align-items:center;gap:14px;margin:18px 0 34px;color:var(--text-dim)}.gallery-divider span{flex:1;height:1px;background:var(--border)}.gallery-divider em{font-style:normal;font-size:12.5px;white-space:nowrap;color:var(--text-dim)}@media(max-width:700px){.gallery-divider em{white-space:normal;text-align:center}}.cover-card{cursor:pointer;padding:0!important;overflow:hidden;min-height:230px;justify-content:flex-start!important;transition:transform .2s,box-shadow .2s;contain:layout paint}.cover-card:hover{transform:translateY(-5px);box-shadow:0 12px 28px #3c342f16}.cover-card:focus-visible{outline:3px solid var(--accent);outline-offset:4px}.cover-art{height:155px;display:flex;align-items:center;justify-content:center;font-size:62px;color:var(--tag-doc);background:repeating-linear-gradient(90deg,transparent,transparent 27px,#ffffff60 28px),linear-gradient(140deg,#fff,var(--tag-doc-bg));border-bottom:1px solid var(--border);position:relative}.cover-art:after{content:'';position:absolute;inset:18px;border:1px solid #ffffffb0;border-radius:4px}.cover-card[data-cat=doc] .cover-art{color:var(--tag-doc);background:repeating-linear-gradient(90deg,transparent,transparent 27px,#ffffff60 28px),linear-gradient(140deg,#fff,var(--tag-doc-bg))}.cover-card[data-cat=service] .cover-art{color:var(--tag-service);background:repeating-linear-gradient(90deg,transparent,transparent 27px,#ffffff60 28px),linear-gradient(140deg,#fff,var(--tag-service-bg))}.cover-card[data-cat=promo] .cover-art{color:var(--tag-promo);background:repeating-linear-gradient(90deg,transparent,transparent 27px,#ffffff60 28px),linear-gradient(140deg,#fff,var(--tag-promo-bg))}.cover-card[data-cat=data] .cover-art{color:var(--tag-data);background:repeating-linear-gradient(90deg,transparent,transparent 27px,#ffffff60 28px),linear-gradient(140deg,#fff,var(--tag-data-bg))}.cover-card[data-cat=notice] .cover-art{color:var(--tag-notice);background:repeating-linear-gradient(90deg,transparent,transparent 27px,#ffffff60 28px),linear-gradient(140deg,#fff,var(--tag-notice-bg))}.cover-card h3{padding:20px!important;margin:0!important;font-size:18px!important}.cover-card[data-cat=doc] h3{color:var(--tag-doc)}.cover-card[data-cat=service] h3{color:var(--tag-service)}.cover-card[data-cat=promo] h3{color:var(--tag-promo)}.cover-card[data-cat=data] h3{color:var(--tag-data)}.cover-card[data-cat=notice] h3{color:var(--tag-notice)}.cover-card[data-cat=doc]{border-color:var(--tag-doc)}.cover-card[data-cat=service]{border-color:var(--tag-service)}.cover-card[data-cat=promo]{border-color:var(--tag-promo)}.cover-card[data-cat=data]{border-color:var(--tag-data)}.cover-card[data-cat=notice]{border-color:var(--tag-notice)}
+#promptDialog{border:1px solid var(--border);border-radius:18px;padding:0;width:min(960px,94vw);max-height:90vh;color:var(--text);background:var(--bg);transform:translateZ(0);contain:layout paint}#promptDialog::backdrop{background:#15302e66;backdrop-filter:blur(3px);will-change:backdrop-filter;transform:translateZ(0)}.modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);gap:15px}.modal-head h2{font-size:21px;margin:0}.modal-body{padding:22px 24px;overflow:auto;max-height:calc(90vh - 180px);scroll-behavior:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;contain:layout paint style}.modal-tools{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}.modal-tools #bottomCopy{margin-left:auto}.modal-tools button,#closePrompt{border:1px solid var(--border);border-radius:8px;padding:10px 14px;background:white;color:var(--text);cursor:pointer;font:inherit}.modal-tools button.primary{background:var(--accent-strong);color:white;border-color:var(--accent-strong)}.prompt-preview{white-space:pre-wrap;font-size:14px;line-height:1.9;background:white;padding:20px;border:1px solid var(--border);border-radius:10px;overflow-wrap:anywhere}.prompt-preview input{font:inherit;padding:3px 7px;border:1px solid #f0a8ce;border-radius:5px;background:#FDEEF6;color:#9c2566;max-width:100%;min-width:100px}.example-note{font-size:13px;color:var(--text-dim)}#copyStatus{min-height:24px;font-size:14px}@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.level-nav{grid-template-columns:repeat(3,1fr)}}@media(max-width:480px){.grid{grid-template-columns:1fr}.modal-body{padding:16px}.modal-head{padding:16px}.cover-art{height:130px}.level-nav{grid-template-columns:repeat(2,1fr)}}
+.sign-off{position:relative;text-align:center;padding:38px 24px;border-radius:20px;background:linear-gradient(135deg,#eafbf9,#FDEEF6 60%,#eef0fb);border:1px dashed #9adbd3;overflow:hidden}
+.sign-off:before,.sign-off:after{content:'';position:absolute;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#ffffffaa,transparent 70%)}
+.sign-off:before{top:-50px;left:-40px}.sign-off:after{bottom:-60px;right:-30px}
+.sign-off-mark{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;background:#fff;box-shadow:0 6px 16px #0F9C931f;font-size:22px;margin-bottom:14px}
+.sign-off-text{position:relative;margin:0 auto 18px;max-width:460px;color:var(--text-dim);font-size:14px;line-height:1.7}
+.sign-off-btn{position:relative;background:transparent;border:1px solid var(--accent-strong);color:var(--accent-strong);padding:10px 20px;border-radius:999px;font-weight:700;font-size:13.5px;cursor:pointer;transition:background .18s,color .18s}
+.sign-off-btn:hover{background:var(--accent-strong);color:#fff}
+</style><style>#viewExample{background:#1CB8AE;color:white;border-color:#1CB8AE}#viewExample:hover{background:#0F9C93}.modal-tools button[aria-pressed=true]{box-shadow:0 0 0 2px #A7E4DE}.usage-note{margin:0 0 16px;padding:8px 12px;border-radius:7px;background:#EAFBF9;color:var(--text-dim);font-size:13px;line-height:1.5}.usage-note[hidden]{display:none}.copy-footer{display:flex;justify-content:flex-end;margin-top:16px}.copy-footer button{font:inherit;font-size:12px;padding:7px 12px;border-radius:6px;border:1px solid var(--border);background:white;color:var(--text);cursor:pointer}.copy-top-btn{font:inherit;font-size:12px;padding:7px 12px;border:0;border-radius:7px;background:#4F8C82;color:#fff;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.12)}.copy-top-btn:hover{background:#39766d}.modal-head{position:relative}.dialog-toast{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);z-index:20;padding:8px 13px;border-radius:7px;background:rgba(35,31,28,.94);color:#fff;font-size:13px;line-height:1.3;box-shadow:0 4px 14px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease}.dialog-toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}.input-row{display:flex;flex-direction:column;gap:7px;margin-bottom:17px}.field-name{font-weight:700;font-size:14px}.bracket-input{display:flex;gap:8px;align-items:center;color:#B2458E}.bracket-input textarea{width:100%;padding:10px 12px;border:1px solid #F5C6DF;border-radius:7px;background:#FDF3F8;font:inherit;font-size:14px;color:var(--text);resize:vertical}.bracket-input textarea::placeholder{color:#b3aaa1;opacity:1}.form-intro{font-size:13px;color:var(--text-dim);margin-top:0}.prompt-preview:has(.input-row){white-space:normal}</style><style>.prompt-preview{white-space:pre-wrap!important}.inline-field{display:inline-flex;align-items:center;gap:2px;vertical-align:middle;max-width:100%;color:#B2458E}.inline-entry{display:inline-block;box-sizing:border-box;width:10em;max-width:min(65em,70vw);min-height:30px;margin:0;padding:3px 5px;border:1px solid #F0B8D6;border-radius:5px;background:#FDF3F8;color:var(--text);font:inherit;line-height:1.5;resize:none;overflow:hidden;vertical-align:middle}.inline-entry::placeholder{color:#b8aea5;opacity:1}@media(max-width:480px){.inline-entry{max-width:65vw}}</style><style>.copy-footer{gap:8px}#templateEditorWrap[hidden]{display:none}#templateEditor{width:100%;padding:16px;font:inherit;font-size:14px;line-height:1.8;background:#fff;border:1px solid var(--border);border-radius:10px;resize:vertical;color:var(--text)}.edit-help{font-size:13px;color:var(--text-dim)}.editor-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}.editor-actions button{font:inherit;padding:9px 14px;border:1px solid var(--border);border-radius:7px;cursor:pointer}#saveTemplateEdit{background:#1CB8AE;color:white}</style><style>#promptDialog .modal-tools[hidden]{display:none}.edit-help p{margin:6px 0}.edit-help pre{white-space:pre-wrap;padding:12px;background:#EAFBF9;border:1px solid var(--border);border-radius:7px;font:inherit;line-height:1.8}</style><style>#templateEditorWrap .edit-help{font-size:12px;font-weight:400;line-height:1.7;color:#8695A3;margin:0 0 12px;padding:0;background:none;border:0;}</style><style>header .nav-links{gap:10px;font-size:16px;font-weight:700}header .nav-links a{padding:10px 17px;border:1px solid var(--border);border-radius:11px;background:#EAFBF9;text-decoration:none;transition:.2s}header .nav-links a.active-tab{color:var(--accent-strong);background:#D9F5F1;border-color:#9ADBD3;box-shadow:0 3px 10px #0f9c930d}header .nav-links a:hover{background:#D9F5F1;transform:translateY(-1px)}#addPromptDialog{width:min(740px,94vw);max-height:90vh;border:1px solid var(--border);border-radius:18px;padding:0;background:var(--bg);color:var(--text)}#addPromptDialog::backdrop{background:#201a1666;backdrop-filter:blur(2px);will-change:backdrop-filter;transform:translateZ(0)}#addPromptDialog{transform:translateZ(0);contain:layout paint}#addPromptForm label{display:block;font-weight:700;margin-bottom:16px}#addPromptForm input,#addPromptForm textarea,#addPromptForm select{display:block;width:100%;padding:10px 12px;margin-top:6px;font:inherit;color:var(--text);background:white;border:1px solid var(--border);border-radius:8px}#addPromptForm textarea{resize:vertical}.add-help{font-size:12px;color:#8695a3}.cta-band button{font:inherit;cursor:pointer;border:0}@media(max-width:680px){header .nav-inner{flex-wrap:wrap;gap:10px}header .nav-links{display:flex!important;font-size:14px}header .nav-links a{padding:8px 10px}}
+</style></head>
+<body>
+<header class="nav">
+<div class="nav-inner">
+<div class="brand"><span class="dot"></span>Library Prompt Field Guide</div>
+<nav class="nav-links">
+<a class="tab-btn active-tab" href="#gallery" id="navTabGallery" onclick="showTab('gallery');return false;">프롬프트 모음</a>
+<a class="tab-btn" href="#" id="navTabGuide" onclick="showTab('guide');return false;">사용법 &amp; AI 활용팁</a>
+</nav>
+
+<button class="burger">☰</button>
+</div>
+</header>
+<div class="tab-content active" id="tab-gallery">
+<section class="hero">
+<div class="wrap hero-inner">
+<div class="book-art" aria-hidden="true">
+<div class="book-art-glow"></div>
+<div class="book3d">
+<div class="book-page book-page-3"></div>
+<div class="book-page book-page-2"></div>
+<div class="book-page book-page-1"></div>
+<div class="book-cover-left"></div>
+<div class="book-cover-right"><span class="book-spark">✨</span></div>
+<div class="book-spine"></div>
+<div class="book-bookmark"></div>
+</div>
+</div>
+<span class="eyebrow">📚 FIELD GUIDE · LIBRARY AI PROMPTS</span>
+<h1 class="headline">사서 업무에 바로 쓰는<br/><span class="accent">AI 프롬프트 아카이브</span></h1>
+<p class="sub">복사해서 바로 쓰고, 검토하고, 다시 쓸 수 있는 대학도서관 실무 프롬프트 모음입니다. 행정문서부터 이용자 응대, 홍보 콘텐츠, 데이터 분석, 공지사항 작성까지 상황별 템플릿을 제공합니다.</p>
+<div class="hero-actions">
+<a class="btn-primary" href="#gallery" id="browsePromptsBtn">프롬프트 둘러보기</a>
+<a class="btn-ghost" href="#" id="showGuideBtn">사용 방법 보기</a>
+</div>
+</div>
+</section>
+<section class="wrap" id="catNav">
+<div class="section-head">
+<h2>업무 영역별로 바로 찾기</h2>
+<p>카드를 누르면 해당 분류로 바로 이동합니다. 사서 업무 흐름에 맞춰 다섯 가지 영역으로 정리했습니다.</p>
+</div>
+<div class="level-nav" style="margin-bottom:14px">
+<button class="level-card" data-filter="doc" data-target="cat-doc">
+<span class="level-icon" style="color:var(--tag-doc);background:var(--tag-doc-bg)">▤</span>
+<span class="level-eyebrow">AREA 1 · 문서작업</span>
+<span class="level-title">행정문서 · 기획안</span>
+<span class="level-desc">공문·보고서·프로그램 기획을 초안부터 빠르게</span>
+</button>
+<button class="level-card" data-filter="service" data-target="cat-service">
+<span class="level-icon" style="color:var(--tag-service);background:var(--tag-service-bg)">◉</span>
+<span class="level-eyebrow">AREA 2 · 이용자 서비스</span>
+<span class="level-title">응대 · 다국어 안내</span>
+<span class="level-desc">규정에 근거한 답변과 번역을 정확하게</span>
+</button>
+<button class="level-card" data-filter="promo" data-target="cat-promo">
+<span class="level-icon" style="color:var(--tag-promo);background:var(--tag-promo-bg)">✦</span>
+<span class="level-eyebrow">AREA 3 · 홍보 · 콘텐츠</span>
+<span class="level-title">SNS · 큐레이션</span>
+<span class="level-desc">대출을 끌어내는 홍보 문구와 전시 기획</span>
+</button>
+<button class="level-card" data-filter="data" data-target="cat-data">
+<span class="level-icon" style="color:var(--tag-data);background:var(--tag-data-bg)">▥</span>
+<span class="level-eyebrow">AREA 4 · 데이터</span>
+<span class="level-title">통계 분석 · 검수</span>
+<span class="level-desc">실적 보고와 AI 결과물 사실 검증</span>
+</button>
+<button class="level-card" data-filter="notice" data-target="cat-notice">
+<span class="level-icon" style="color:var(--tag-notice);background:var(--tag-notice-bg)">◈</span>
+<span class="level-eyebrow">AREA 5 · 공지사항</span>
+<span class="level-title">홈페이지 공지 전반</span>
+<span class="level-desc">책나래 · 교육 · 행사 등 공지 유형별 템플릿</span>
+</button>
+</div>
+<div class="filter-bar" id="filterBar">
+<button class="chip active" data-filter="all">전체</button>
+<button class="chip" data-filter="doc">문서작업</button>
+<button class="chip" data-filter="service">이용자 서비스</button>
+<button class="chip" data-filter="promo">홍보 · 콘텐츠</button>
+<button class="chip" data-filter="data">데이터</button>
+<button class="chip" data-filter="notice">공지사항</button>
+</div>
+</section>
+<section class="wrap" id="gallery">
+<div class="section-head" style="margin-bottom:0">
+<h2>상황별 프롬프트 모음</h2>
+</div>
+<div class="gallery-divider" aria-hidden="true"><span></span><em>표지를 누르면 프롬프트가 열립니다 · 대괄호 안 예시를 수정해 복사하세요</em><span></span></div>
+
+<div class="cat-section" data-cat="doc" id="cat-doc">
+<div class="cat-head">
+<span class="section-label" style="color:var(--tag-doc)">AREA 1 · 문서작업</span>
+<h3>행정문서와 기획안, 근거 없는 내용 없이 초안부터</h3>
+<p class="section-desc">공문·보고서·프로그램 기획·자료 큐레이션까지, 입력한 사실만으로 구성된 문서 초안을 만듭니다.</p>
+<ul class="feature-list">
+<li>목적·대상·핵심 내용을 입력하면 제목부터 문의처까지 순서를 갖춘 문서로 정리</li>
+<li>날짜·금액·규정처럼 정확성이 중요한 정보는 입력하지 않으면 "확인 필요"로 표시</li>
+<li>프로그램 기획은 아이디어 비교·추천까지, 큐레이션은 전시 소개문까지 한 번에 생성</li>
+</ul>
+</div>
+<div class="grid" id="cardGrid-doc">
+<div aria-label="행정문서 작성기 프롬프트 열기" class="card cover-card" data-cat="doc" data-index="0" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">▤</div><h3>행정문서 작성기</h3></div>
+<div aria-label="프로그램 기획 아이디어 생성기 프롬프트 열기" class="card cover-card" data-cat="doc" data-index="1" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">▤</div><h3>프로그램 기획 아이디어 생성기</h3></div>
+<div aria-label="주제별 자료 큐레이션 기획안 프롬프트 열기" class="card cover-card" data-cat="doc" data-index="2" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">▤</div><h3>주제별 자료 큐레이션 기획안</h3></div>
+</div>
+<div class="cat-callout">
+<h4>⚠️ 활용할 때 확인해 주세요</h4>
+<p>결재·게시 전 규정집·예산 근거와 대조하세요. AI가 만든 기한·연락처·인용은 담당자 확인 없이 그대로 발송하지 마세요.</p>
+</div>
+</div>
+
+<div class="cat-section" data-cat="service" id="cat-service">
+<div class="cat-head">
+<span class="section-label" style="color:var(--tag-service)">AREA 2 · 이용자 서비스</span>
+<h3>문의 응대와 다국어 안내, 규정에 근거하여 정확하게</h3>
+<p class="section-desc">이용자 문의에 짧은 답변과 상세 답변을 동시에 만들고, 안내문을 원문과 함께 번역합니다.</p>
+<ul class="feature-list">
+<li>확인된 규정만 근거로 사용하고, 규정으로 확인되지 않는 내용은 단정하지 않음</li>
+<li>이메일·채팅 등 응답 채널에 맞춰 톤과 분량을 조정</li>
+<li>번역 시 날짜·조건·경로는 원문과 일치시키고 모호한 표현은 별도 확인사항으로 정리</li>
+</ul>
+</div>
+<div class="grid" id="cardGrid-service">
+<div aria-label="이용자 문의 응답 생성기 프롬프트 열기" class="card cover-card" data-cat="service" data-index="3" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◉</div><h3>이용자 문의 응답 생성기</h3></div>
+<div aria-label="다국어 안내문 번역기 프롬프트 열기" class="card cover-card" data-cat="service" data-index="4" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◉</div><h3>다국어 안내문 번역기</h3></div>
+</div>
+<div class="cat-callout">
+<h4>⚠️ 활용할 때 확인해 주세요</h4>
+<p>이용자 이름·학번·연락처·대출 이력 같은 개인정보는 프롬프트에 그대로 입력하지 마세요. 발송 전 규정과 실제 상황이 일치하는지 담당자가 다시 확인하세요.</p>
+</div>
+</div>
+
+<div class="cat-section" data-cat="promo" id="cat-promo">
+<div class="cat-head">
+<span class="section-label" style="color:var(--tag-promo)">AREA 3 · 홍보 · 콘텐츠</span>
+<h3>대출로 이어지는 SNS 문구와 전시 큐레이션</h3>
+<p class="section-desc">채널에 맞는 제목·본문·해시태그를 한 번에 생성하되, 도서 서지정보와 혜택은 창작하지 않습니다.</p>
+<ul class="feature-list">
+<li>제목 후보 3개와 행동 유도 문구, 해시태그까지 한 세트로 출력</li>
+<li>인스타그램·블로그 등 채널별 분량·말투를 자동 반영</li>
+<li>실제 도서 목록·대출 안내를 입력한 범위에서만 사용</li>
+</ul>
+</div>
+<div class="grid" id="cardGrid-promo">
+<div aria-label="홍보 콘텐츠 에디터 프롬프트 열기" class="card cover-card" data-cat="promo" data-index="5" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">✦</div><h3>홍보 콘텐츠 에디터</h3></div>
+</div>
+<div class="cat-callout">
+<h4>⚠️ 활용할 때 확인해 주세요</h4>
+<p>게시 전 저작권·이미지 출처·과장 표현 여부를 확인하세요. 없는 혜택·이벤트를 만들어내지 않도록 핵심 사실을 먼저 입력하세요.</p>
+</div>
+</div>
+
+<div class="cat-section" data-cat="data" id="cat-data">
+<div class="cat-head">
+<span class="section-label" style="color:var(--tag-data)">AREA 4 · 데이터</span>
+<h3>실적 분석과 AI 결과물 검수, 추측 대신 근거로</h3>
+<p class="section-desc">통계 수치를 바탕으로 한 분석 보고와, 게시 전 문안의 사실·개인정보·링크를 점검합니다.</p>
+<ul class="feature-list">
+<li>핵심 수치 → 증감 계산 → 관찰된 패턴 → 해석의 한계 순으로 과장 없이 정리</li>
+<li>원인과 상관관계를 단정하지 않고, 계산 불가 항목은 명시</li>
+<li>검수 프롬프트는 문제·위험도·대체 문장·확인 필요 여부를 표로 정리</li>
+</ul>
+</div>
+<div class="grid" id="cardGrid-data">
+<div aria-label="성과 · 통계 분석기 프롬프트 열기" class="card cover-card" data-cat="data" data-index="6" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">▥</div><h3>성과 · 통계 분석기</h3></div>
+<div aria-label="AI 결과물 검수 프롬프트 프롬프트 열기" class="card cover-card" data-cat="data" data-index="7" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">▥</div><h3>AI 결과물 검수 프롬프트</h3></div>
+</div>
+<div class="cat-callout">
+<h4>⚠️ 활용할 때 확인해 주세요</h4>
+<p>통계 수치는 반드시 실제 시스템 데이터와 대조하세요. AI는 추세를 "설명"할 뿐 원인을 "단정"할 수 없습니다.</p>
+</div>
+</div>
+
+<div class="cat-section" data-cat="notice" id="cat-notice">
+<div class="cat-head">
+<span class="section-label" style="color:var(--tag-notice)">AREA 5 · 공지사항</span>
+<h3>책나래 · 교육 · 행사까지, 공지 유형별 구조화 템플릿</h3>
+<p class="section-desc">홈페이지 공지에 자주 쓰는 11가지 상황별 템플릿입니다. 제목 후보·본문·담당자 확인사항 순서로 출력됩니다.</p>
+<ul class="feature-list">
+<li>신청기간과 운영기간을 분리해서 안내해 이용자 혼선을 줄임</li>
+<li>입력 예시·공지 유형별 입력 템플릿으로 빈칸만 채우면 바로 작성 가능</li>
+<li>게시 전 검수 프롬프트로 최종 확인까지 한 번에 연결</li>
+</ul>
+</div>
+<div class="grid" id="cardGrid-notice">
+<div aria-label="구조화된 도서관 공지 작성 프롬프트 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="8" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>구조화된 도서관 공지 작성 프롬프트</h3></div><div aria-label="교육·라이브러리 아카데미 공지 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="9" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>교육·라이브러리 아카데미 공지</h3></div><div aria-label="독서 프로그램·책나래 공지 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="10" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>독서 프로그램·책나래 공지</h3></div><div aria-label="초청강연·행사 공지 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="11" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>초청강연·행사 공지</h3></div><div aria-label="이용자 만족도 조사 공지 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="12" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>이용자 만족도 조사 공지</h3></div><div aria-label="학기 중·방학 운영시간 공지 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="13" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>학기 중·방학 운영시간 공지</h3></div><div aria-label="AI 추천·전자자료 서비스 공지 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="14" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>AI 추천·전자자료 서비스 공지</h3></div><div aria-label="시스템 점검·휴관 공지 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="15" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>시스템 점검·휴관 공지</h3></div>
+<div aria-label="수업자료 신청 공지 입력 예시 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="16" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>수업자료 신청 공지 입력 예시</h3></div>
+<div aria-label="공지 유형별 입력 템플릿 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="17" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>공지 유형별 입력 템플릿</h3></div>
+<div aria-label="공지 게시 전 검수 프롬프트 프롬프트 열기" class="card cover-card" data-cat="notice" data-index="18" role="button" tabindex="0"><div aria-hidden="true" class="cover-art">◈</div><h3>공지 게시 전 검수 프롬프트</h3></div>
+</div>
+<div class="cat-callout">
+<h4>⚠️ 활용할 때 확인해 주세요</h4>
+<p>신청기간·운영기간·문의처는 게시 직전 최신 정보로 다시 교체하세요. 과거 공지를 재활용할 때 날짜가 남아있지 않은지 꼭 확인하세요.</p>
+</div>
+</div>
+</section>
+<section class="wrap" style="padding:36px 24px 54px">
+<div class="sign-off">
+<span class="sign-off-mark" aria-hidden="true">📚</span>
+<p class="sign-off-text">필요한 프롬프트가 더 있다면, 언제든 새로 더해가며 우리 도서관만의 아카이브로 채워가세요.</p>
+<button class="btn-ghost sign-off-btn" id="addPromptButton" type="button">+ 새 프롬프트 추가하기</button>
+</div>
+</section>
+</div>
+<div class="tab-content" id="tab-guide">
+<div class="guide-hero guide-wrap">
+<span class="eyebrow">📖 사용법 &amp; AI 활용 가이드</span>
+<h1>AI, 이렇게 쓰면 더 안전하고<br/>더 잘 나옵니다</h1>
+<p class="sub">프롬프트 복사부터 결과물 검토까지 3단계 사용법과, 여러 AI 활용 가이드에서 공통적으로 강조하는 <b>주의할 점</b> · <b>유용한 꿀팁</b>을 사서 업무에 맞게 정리했습니다.</p>
+</div>
+<section class="guide-wrap">
+<span class="section-label">Step by step</span>
+<h2>이렇게 사용하세요</h2>
+<p class="section-desc">3단계면 충분합니다. 프롬프트는 도구일 뿐, 최종 확인은 항상 사서의 몫입니다.</p>
+<div class="steps">
+<div class="step">
+<div class="num">1</div>
+<h4>상황에 맞는 카드 선택</h4>
+<p>문서작업 · 이용자 서비스 · 홍보 · 데이터 · 공지사항 5개 카테고리 중 지금 필요한 프롬프트를 찾아보세요.</p>
+</div>
+<div class="step">
+<div class="num">2</div>
+<h4>복사 후 대괄호만 수정</h4>
+<p>"프롬프트 복사" 버튼을 누르고 [대상], [목적], [주제] 같은 대괄호 부분만 실제 상황에 맞게 바꿔주세요. 모르는 정보는 지우지 말고 '없음' 또는 '확인 필요'라고 남겨두면 AI가 알아서 표시해 줍니다.</p>
+</div>
+<div class="step">
+<div class="num">3</div>
+<h4>사용 전 체크리스트 확인</h4>
+<p>사실·규정, 개인정보, 저작권·출처를 확인하고, 최종적으로 담당자가 검토한 뒤 게시·발송하세요.</p>
+</div>
+</div>
+</section>
+<div class="wrap"><div class="divider"></div></div>
+<section class="guide-wrap">
+<span class="section-label" style="color:var(--warn);">Common Cautions</span>
+<h2>⚠️ AI 사용 시 공통적으로 주의할 점</h2>
+<p class="section-desc">OpenAI 커뮤니티, 프롬프트 엔지니어링 가이드 등 여러 해외 자료에서 공통적으로 강조하는 주의사항을 정리했습니다.</p>
+<div class="card-list">
+<div class="item warn">
+<div class="icon">🚫</div>
+<div>
+<h4>AI는 모르면 "모른다"고 하지 않고 지어냅니다 (환각·Hallucination)</h4>
+<p>AI는 빈틈이 있으면 그럴듯하게 채워 넣는 경향이 있습니다. 특히 통계 수치, 책 제목·저자, 규정, 인용문처럼 <b>정확성이 중요한 정보</b>는 AI가 만들어낸 그대로 믿지 말고, 반드시 원자료·규정집과 대조 확인하세요. "모르면 추측하지 말고 확인 필요라고 표시해줘"라고 미리 지시하면 위험을 크게 줄일 수 있습니다.</p>
+<span class="src">출처: OpenAI Community – "How to Reduce Hallucinations in ChatGPT Responses"</span>
+</div>
+</div>
+<div class="item warn">
+<div class="icon">🕵️</div>
+<div>
+<h4>개인정보·민감정보는 절대 그대로 입력하지 마세요</h4>
+<p>이용자 이름, 학번, 연락처, 대출 이력, 연체 기록 같은 개인정보를 AI 프롬프트에 그대로 붙여넣지 마세요. 실제 정보 대신 "[이용자명]", "[학번]" 같은 가상의 자리표시자로 바꿔서 사용하고, 실제 값은 결과물을 받은 뒤 사람이 직접 채워 넣는 것이 안전합니다.</p>
+<span class="src">출처: OpenAI Community 데이터 처리 가이드라인 요약</span>
+</div>
+</div>
+<div class="item warn">
+<div class="icon">🌀</div>
+<div>
+<h4>모호한 프롬프트는 모호한 결과를 낳습니다</h4>
+<p>"공지문 써줘"처럼 막연하게 요청하면 AI는 부족한 정보를 마음대로 상상해서 채웁니다. 대상, 목적, 분량, 톤(정중하게/친근하게), 형식(표/문단)을 구체적으로 지정할수록 결과물의 품질과 일관성이 올라갑니다.</p>
+<span class="src">출처: MyGreatLearning – "5 Common Prompt Engineering Mistakes Beginners Make"</span>
+</div>
+</div>
+<div class="item warn">
+<div class="icon">🎯</div>
+<div>
+<h4>한 번에 너무 많은 걸 시키지 마세요</h4>
+<p>공지문 작성 + 번역 + 카드뉴스 문구 + 통계 분석을 한 프롬프트에 다 넣으면 결과물의 완성도가 떨어집니다. 작업을 단계별로 나눠서(먼저 초안 → 다음 번역 → 다음 다듬기) 순차적으로 요청하는 것이 훨씬 안정적입니다.</p>
+<span class="src">출처: MyGreatLearning – 프롬프트 엔지니어링 초보자 실수 가이드</span>
+</div>
+</div>
+<div class="item warn">
+<div class="icon">🔁</div>
+<div>
+<h4>첫 결과가 완벽할 거라 기대하지 마세요</h4>
+<p>대부분의 좋은 결과물은 한 번에 나오지 않습니다. "더 짧게", "더 정중하게", "이 부분은 표로" 처럼 후속 요청(이터레이션)을 거쳐야 완성도가 올라갑니다. 마음에 안 들면 새로 시작하기보다 지금 결과를 다듬어 나가세요.</p>
+<span class="src">출처: ODSC Medium – "14 Prompt Engineering Mistakes You're Probably Still Making"</span>
+</div>
+</div>
+<div class="item warn">
+<div class="icon">⚖️</div>
+<div>
+<h4>AI는 참고자료일 뿐, 최종 책임은 사람에게 있습니다</h4>
+<p>AI가 만든 공지문·추천사·홍보문은 게시·발송 전에 반드시 담당자가 검토해야 합니다. 저작권, 명예훼손, 차별적 표현, 기관 규정 위반 여부는 AI가 스스로 판단하지 못하므로 사람이 최종 확인하는 절차를 생략하지 마세요.</p>
+<span class="src">출처: MyGreatLearning – "Ignoring AI's Limitations"</span>
+</div>
+</div>
+</div>
+</section>
+<div class="wrap"><div class="divider"></div></div>
+<section class="guide-wrap">
+<span class="section-label" style="color:var(--tip);">Useful Tips</span>
+<h2>💡 AI 활용 꿀팁</h2>
+<p class="section-desc">조금만 다르게 물어봐도 결과물의 품질이 확 달라집니다. 실제로 자주 쓰이는 팁만 골라 정리했습니다.</p>
+<div class="card-list">
+<div class="item tip">
+<div class="icon">🎭</div>
+<div>
+<h4>역할(페르소나)을 먼저 부여하세요</h4>
+<p>"당신은 대학도서관 행정문서 작성 전문가입니다"처럼 AI에게 역할을 먼저 지정하면, 그 역할에 맞는 어투와 형식으로 훨씬 자연스러운 결과가 나옵니다. 이 가이드의 모든 프롬프트가 이 원칙을 따르고 있습니다.</p>
+<span class="src">출처: MyGreatLearning – "Skipping Role Assignment"</span>
+</div>
+</div>
+<div class="item tip">
+<div class="icon">🧩</div>
+<div>
+<h4>지시-정보-기대 세 가지를 항상 포함하세요</h4>
+<p>좋은 프롬프트는 ① 무엇을 할지(Action) ② 어떤 자료를 근거로 할지(Information) ③ 결과가 어떤 형태여야 하는지(Expectation, 분량·톤·형식)를 모두 담고 있습니다. "짧게 써줘"보다 "3문장 이내로, 정중한 문어체로 써줘"가 훨씬 정확한 결과를 만듭니다.</p>
+<span class="src">출처: LinkedIn – Scott Colenutt, "A few prompting tips"</span>
+</div>
+</div>
+<div class="item tip">
+<div class="icon">🪜</div>
+<div>
+<h4>긴 자료는 중간중간 다시 상기시켜 주세요</h4>
+<p>긴 문서나 여러 데이터를 다루는 대화에서는 AI가 앞의 내용을 서서히 잊어버릴 수 있습니다. 몇 차례 대화가 이어졌다면 "위에서 준 자료 기준으로"처럼 핵심 정보를 짧게 다시 언급해주면 결과의 일관성이 유지됩니다.</p>
+<span class="src">출처: OpenAI Community – "Stairwell Prompting Technique"</span>
+</div>
+</div>
+<div class="item tip">
+<div class="icon">📐</div>
+<div>
+<h4>출력 형식을 미리 정해주세요</h4>
+<p>"표로 정리해줘", "번호를 매겨서", "제목 → 본문 → 문의처 순서로"처럼 원하는 형식을 미리 지정하면, AI가 만든 결과를 그대로 복사해서 쓰기 훨씬 편해집니다. 이 가이드의 모든 프롬프트에 출력 순서를 넣어둔 이유이기도 합니다.</p>
+<span class="src">출처: LinkedIn – Scott Colenutt, 프롬프트 구조 팁</span>
+</div>
+</div>
+<div class="item tip">
+<div class="icon">🗂️</div>
+<div>
+<h4>없는 정보는 "없음"이라고 명확히 표시하세요</h4>
+<p>빈칸을 비워두면 AI가 알아서 채워 넣을 위험이 있습니다. 정보가 없다면 "없음", "확인 필요"라고 직접 적어주는 것이 애매하게 비워두는 것보다 훨씬 안전합니다.</p>
+<span class="src">출처: OpenAI Community – 데이터 분석 프롬프트 가이드</span>
+</div>
+</div>
+<div class="item tip">
+<div class="icon">✏️</div>
+<div>
+<h4>수정 요청은 "전체 다시"보다 "이 부분만"으로</h4>
+<p>결과가 마음에 안 들 때 처음부터 다시 요청하기보다, "3번째 문단만 더 짧게 바꿔줘"처럼 구체적으로 짚어서 요청하면 원하는 부분만 정확히 고쳐지고 나머지는 그대로 유지됩니다.</p>
+<span class="src">출처: LinkedIn – Scott Colenutt, "Never edit, always regenerate" 원칙 응용</span>
+</div>
+</div>
+</div>
+</section>
+<section class="guide-wrap">
+<div class="callout">
+<h3>📌 한 줄 요약</h3>
+<p>AI는 초안을 빠르게 만들어주는 훌륭한 도우미이지만, <b>사실 확인·개인정보 보호·최종 책임</b>은 항상 사서의 몫입니다. 역할·정보·형식을 구체적으로 지정하고, 모르는 부분은 "확인 필요"로 남기는 습관만 들여도 훨씬 안정적인 결과를 얻을 수 있습니다.</p>
+</div>
+</section>
+</div>
+<footer>
+<div class="wrap footer-inner">
+<div class="brand"><span class="dot"></span>Library Prompt Field Guide</div>
+<div class="footer-links">
+<a href="#gallery">프롬프트 모음</a>
+<a href="#" onclick="showTab('guide');return false;">사용법 &amp; AI 활용팁</a>
+<a href="#checklist">확인 체크리스트</a>
+</div>
+<div class="foot-note">© 2026 대학도서관 AI 프롬프트 필드 가이드. 실무 참고용 아카이브입니다.</div>
+</div>
+</footer>
+<div id="copyToast" role="status" aria-live="polite">복사되었습니다.</div>
+<script>
+  function applyFilter(f){
+    document.querySelectorAll('.cat-section').forEach(sec=>{
+      sec.style.display=(f==='all'||sec.dataset.cat===f)?'':'none';
+    });
+    document.querySelectorAll('.level-card').forEach(lc=>{
+      lc.classList.toggle('active', f!=='all' && lc.dataset.filter===f);
+    });
+  }
+
+  // filter
+  const chips = document.querySelectorAll('.chip');
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      applyFilter(chip.dataset.filter);
+    });
+  });
+
+  // 레벨(업무 영역) 네비게이션: 해당 카테고리로 필터링하고 해당 섹션으로 스크롤
+  document.querySelectorAll('.level-card').forEach(lc=>{
+    lc.addEventListener('click', () => {
+      const f = lc.dataset.filter;
+      chips.forEach(c => c.classList.toggle('active', c.dataset.filter===f));
+      applyFilter(f);
+      const target = document.getElementById(lc.dataset.target);
+      if(target){
+        const head = target.querySelector('.cat-head') || target;
+        setTimeout(()=>head.scrollIntoView({behavior:'smooth', block:'start'}), 30);
+      }
+    });
+  });
+
+  function stripBrackets(text){
+    return String(text).replace(/\[([^\]]*)\]/g, '$1');
+  }
+  let copyToastTimer;
+  function showCopyToast(){
+    const inDialog=document.getElementById('promptDialog')?.open;
+    const toast=document.getElementById(inDialog?'dialogToast':'copyToast');
+    if(!toast) return;
+    toast.classList.add('show');
+    clearTimeout(copyToastTimer);
+    copyToastTimer=setTimeout(()=>toast.classList.remove('show'), 1600);
+  }
+
+  // copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const box = btn.closest('.card').querySelector('.prompt-box');
+      const text = stripBrackets(box.innerText);
+      navigator.clipboard.writeText(text).then(() => {
+        showCopyToast();
+        const original = btn.textContent;
+        btn.textContent = '✓ 복사 완료';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 1600);
+      }).catch(() => {
+        alert('복사에 실패했습니다. 직접 드래그하여 복사해주세요.');
+      });
+    });
+  });
+
+  function showTab(name){
+    document.getElementById('tab-gallery').classList.toggle('active', name==='gallery');
+    document.getElementById('tab-guide').classList.toggle('active', name==='guide');
+    document.getElementById('navTabGallery').classList.toggle('active-tab', name==='gallery');
+    document.getElementById('navTabGuide').classList.toggle('active-tab', name==='guide');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  document.getElementById('navTabGallery').addEventListener('click', function(e){ e.preventDefault(); showTab('gallery'); });
+  document.getElementById('navTabGuide').addEventListener('click', function(e){ e.preventDefault(); showTab('guide'); });
+
+  // 프롬프트 둘러보기: 첫 번째 프롬프트 카드까지 부드럽게 스크롤 + 하이라이트 펄스
+  document.getElementById('browsePromptsBtn').addEventListener('click', function(e){
+    e.preventDefault();
+    if(!document.getElementById('tab-gallery').classList.contains('active')){ showTab('gallery'); }
+    setTimeout(function(){
+      const firstCard = document.querySelector('#gallery .card');
+      if(firstCard){
+        firstCard.scrollIntoView({behavior:'smooth', block:'center'});
+        firstCard.classList.remove('spotlight');
+        void firstCard.offsetWidth;
+        firstCard.classList.add('spotlight');
+        setTimeout(()=>firstCard.classList.remove('spotlight'), 1300);
+      }
+    }, 80);
+  });
+
+  // 사용 방법 보기: 탭을 슬라이드 전환하며 이동
+  document.getElementById('showGuideBtn').addEventListener('click', function(e){
+    e.preventDefault();
+    showTab('guide');
+  });
+</script>
+<dialog id="settingsDialog" aria-labelledby="settingsTitle"><div class="settings-head"><h3 id="settingsTitle">프롬프트 설정</h3><button id="closeSettings" aria-label="설정 닫기">✕</button></div><div class="settings-body"><label for="settingsTitleInput">제목 수정<input id="settingsTitleInput" type="text"></label><div class="settings-actions"><button class="danger" id="deletePrompt">프롬프트 삭제</button><button id="cancelSettings">취소</button><button class="save" id="saveSettings">저장</button></div></div></dialog><dialog aria-labelledby="promptTitle" id="promptDialog"><div class="modal-head"><h2 id="promptTitle"></h2><button aria-label="닫기" id="closePrompt">✕</button></div><div class="modal-body"><div class="modal-tools"><button id="viewExample">입력하기</button><button id="viewOriginal">예시보기</button><button class="copy-top-btn" id="bottomCopy">예시 복사하기</button></div><p id="usageNote" class="usage-note" hidden>대괄호 [ ] 안의 내용을 실제 정보로 바꿔 입력하세요.<br>예: [대상], [목적], [주제]를 상황에 맞게 수정한 뒤 복사하세요.</p><p aria-live="polite" id="copyStatus" role="status"></p><div class="prompt-preview" id="promptPreview"></div><div class="dialog-toast" id="dialogToast" role="status" aria-live="polite">복사되었습니다.</div><div hidden="" id="templateEditorWrap"><p class="edit-help">고정 문구·항목명을 수정할 수 있습니다.<br/>항목 추가는 항목명: [예시] 형식으로 작성하세요.<br/>(예: 문서 형태: [안내문] 또는 장소: [중앙도서관 교육실])</p><textarea aria-label="프롬프트 전체 수정" id="templateEditor" rows="18"></textarea><div class="editor-actions"><button id="cancelTemplateEdit">취소</button><button id="saveTemplateEdit">수정완료하기</button></div></div><div class="copy-footer"><button id="editTemplate">수정하기</button></div></div></dialog><script>
+const promptCatalog=[{"title": "행정문서 작성기", "cat": "doc", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 행정문서를 작성해 주세요. 출력은 제목 → 작성 목적 → 핵심 내용 → 세부사항 → 수신자가 할 일 → 문의처 순서로 구성하세요. 공문·회의록·보고서 등 선택한 문서 종류에 맞게 형식을 조정하세요. 내부 확인사항은 문서와 분리하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [공식 안내문 작성]\n주제: [도서관 이용 안내]\n문서 종류: [안내문]\n핵심 내용: [신청 방법과 이용 시 유의사항]\n일정·기한: [2026.10.01.~10.31.]\n담당 부서·문의처: [학술정보서비스팀 / 실제 연락처 입력]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "프로그램 기획 아이디어 생성기", "cat": "doc", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 현실적인 프로그램 아이디어 5개를 제안해 주세요. 아이디어별 콘셉트·운영절차·자원·홍보방법·성과지표·위험요인을 정리하고 가장 적합한 1개를 추천하세요. 기대효과를 확정된 성과처럼 쓰지 마세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [도서관 방문과 독서 참여 확대]\n주제: [시험기간 독서 프로그램]\n예산: [30만원]\n운영기간: [2주]\n운영인력: [사서 2명]\n제약사항: [기존 공간과 소장자료 활용]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "주제별 자료 큐레이션 기획안", "cat": "doc", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 자료 큐레이션안을 작성해 주세요. 선정 기준 → 자료 목록(서지정보·추천 이유·추천 대상) → 전시 소개문 → 도서별 한 줄 추천 순서로 출력하세요. 목록에 없는 서지정보는 만들지 말고, 목록이 없으면 선정 기준과 자료 수집 양식만 제시하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [소장자료의 대출과 독서 유도]\n주제: [시험기간 마음 돌보기]\n자료 수: [8권]\n보유자료 목록: [실제 제목·저자·출판연도·청구기호 입력]\n전시 장소·기간: [자료실 추천도서 코너 / 2주]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "이용자 문의 응답 생성기", "cat": "service", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 이용자 답변을 작성해 주세요. 짧은 답변(3문장 이내)과 상세 답변(문의 확인 → 규정에 근거한 답변 → 다음 행동 → 문의처)을 제공하세요. 규정으로 확인되지 않는 내용은 단정하지 마세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [규정에 근거한 이용자 응대]\n주제: [대출 연장 문의]\n이용자 문의: [예약된 도서도 대출 연장이 가능한가요?]\n확인된 규정: [실제 대출 연장 규정 입력]\n응답 채널: [이메일]\n문의처: [대출반납실 / 실제 연락처 입력]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "다국어 안내문 번역기", "cat": "service", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 안내문을 번역해 주세요. 원문과 번역문을 문단별로 병기하고, 쉬운 표현을 사용하세요. 날짜·조건·경로는 원문과 일치시키고, 모호한 표현은 별도 확인사항으로 정리하세요.\n\n입력 정보\n대상: [외국인 유학생]\n목적: [외국인 이용자의 이해 지원]\n주제: [도서관 이용 안내]\n번역 언어: [영어]\n한국어 원문: [번역할 안내문 전체 입력]\n유지할 고유명사: [도서관명·서비스명·메뉴명]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "홍보 콘텐츠 에디터", "cat": "promo", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홍보 콘텐츠를 작성해 주세요. 제목 3개 → 채널에 맞는 본문 → 행동 유도 문구 → 해시태그 5개를 출력하세요. 도서 서지정보와 혜택을 창작하지 마세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [도서 대출 유도]\n주제: [신착도서 소개]\n채널: [인스타그램]\n핵심 사실: [실제 도서 목록과 대출 안내]\n게시일: [2026.10.01.]\n분량: [본문 300자 이내]\n이용자 행동: [도서관 홈페이지에서 소장 위치 확인]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "성과 · 통계 분석기", "cat": "data", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 실적을 분석해 주세요. 핵심 수치 → 증감과 계산식 → 관찰된 패턴 → 해석의 한계 → 추가 필요 데이터 → 개선안 3개 순서로 출력하세요. 원인과 상관관계를 단정하지 말고 분모가 0인 증감률은 계산 불가로 표시하세요.\n\n입력 정보\n대상: [도서관 담당자]\n목적: [운영 개선과 보고]\n주제: [월별 대출 실적]\n실제 데이터: [전월 100건 / 당월 120건]\n비교 기준: [전월 대비]\n보고 대상: [도서관장]\n분석 제약: [학과별 이용자 수 자료 없음]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "AI 결과물 검수 프롬프트", "cat": "data", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 문안을 검수해 주세요. 사실·일시·조건·링크·개인정보·서지정보·과장·문의처를 점검하고 문제 / 위험도 / 대체 문장 / 담당자 확인 여부를 표로 정리하세요. 확인할 근거가 없는 항목은 검증 필요로 표시하고 새 사실은 추가하지 마세요.\n\n입력 정보\n대상: [도서관 이용자]\n목적: [게시 전 오류와 이용자 오해 예방]\n주제: [홈페이지 공지 검수]\n검토할 문안: [검수할 문안 전체 입력]\n확인 가능한 원자료: [실제 규정·운영계획·담당자 확인 내용]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "구조화된 도서관 공지 작성 프롬프트", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홈페이지 공지를 작성해 주세요. 제목 후보 3개 → 게시용 본문(한 문장 소개 → 개요 → 참여 방법 → 유의사항 → 문의처) → 담당자 확인사항 순서로 출력하세요. 대상과 기간을 개요에서 한 번씩 명확히 안내하고 같은 문장을 반복하지 마세요. 신청기간과 운영기간은 구분하세요. 여러 신청 경로가 대안인지 순차 절차인지 구분하고, 없는 혜택은 생략하세요. HTML 선택 시 외부 자원·스크립트 없는 본문 조각만 제공하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [참여 방법과 유의사항 안내]\n주제: [도서관 프로그램 운영 안내]\n사업명·학년도·학기: [2026학년도 2학기 / 사업명 없으면 해당 없음]\n핵심 내용: [확정된 운영 내용 입력]\n신청기간: [실제 신청기간 또는 해당 없음]\n운영기간·일시: [실제 운영기간·행사일시·적용기간]\n신청·이용 방법: [실제 메뉴 경로 또는 단계별 절차]\n유의사항: [확인된 제한·예외·변경사항]\n문의처: [담당 부서 / 실제 전화·이메일]\n출력형식: [텍스트 또는 HTML 본문 조각]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "교육·라이브러리 아카데미 공지", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홈페이지 공지를 작성해 주세요. 제목 후보 3개 → 게시용 본문(한 문장 소개 → 개요 → 참여 방법 → 유의사항 → 문의처) → 담당자 확인사항 순서로 출력하세요. 대상과 기간을 개요에서 한 번씩 명확히 안내하고 같은 문장을 반복하지 마세요. 신청기간과 운영기간은 구분하세요. 여러 신청 경로가 대안인지 순차 절차인지 구분하고, 없는 혜택은 생략하세요. HTML 선택 시 외부 자원·스크립트 없는 본문 조각만 제공하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [참여 방법과 유의사항 안내]\n주제: [학술정보 검색 교육]\n사업명·학년도·학기: [2026학년도 2학기 / 사업명 없으면 해당 없음]\n핵심 내용: [확정된 운영 내용 입력]\n신청기간: [실제 신청기간 또는 해당 없음]\n운영기간·일시: [실제 운영기간·행사일시·적용기간]\n신청·이용 방법: [실제 메뉴 경로 또는 단계별 절차]\n교육 내용: [전자자료 검색과 원문 이용]\n이수조건·혜택: [실제 수료 조건과 혜택 입력]\n유의사항: [확인된 제한·예외·변경사항]\n문의처: [담당 부서 / 실제 전화·이메일]\n출력형식: [텍스트 또는 HTML 본문 조각]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "독서 프로그램·책나래 공지", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홈페이지 공지를 작성해 주세요. 제목 후보 3개 → 게시용 본문(한 문장 소개 → 개요 → 참여 방법 → 유의사항 → 문의처) → 담당자 확인사항 순서로 출력하세요. 대상과 기간을 개요에서 한 번씩 명확히 안내하고 같은 문장을 반복하지 마세요. 신청기간과 운영기간은 구분하세요. 여러 신청 경로가 대안인지 순차 절차인지 구분하고, 없는 혜택은 생략하세요. HTML 선택 시 외부 자원·스크립트 없는 본문 조각만 제공하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [참여 방법과 유의사항 안내]\n주제: [독서 프로그램 책나래]\n사업명·학년도·학기: [2026학년도 2학기 / 사업명 없으면 해당 없음]\n핵심 내용: [확정된 운영 내용 입력]\n신청기간: [실제 신청기간 또는 해당 없음]\n운영기간·일시: [실제 운영기간·행사일시·적용기간]\n신청·이용 방법: [실제 메뉴 경로 또는 단계별 절차]\n운영 내용: [도서 선정·독서·후기 공유]\n제출물·제출기한: [독서후기 1편 / 실제 기한 입력]\n혜택·지급조건: [실제 조건 입력 또는 해당 없음]\n유의사항: [확인된 제한·예외·변경사항]\n문의처: [담당 부서 / 실제 전화·이메일]\n출력형식: [텍스트 또는 HTML 본문 조각]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "초청강연·행사 공지", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홈페이지 공지를 작성해 주세요. 제목 후보 3개 → 게시용 본문(한 문장 소개 → 개요 → 참여 방법 → 유의사항 → 문의처) → 담당자 확인사항 순서로 출력하세요. 대상과 기간을 개요에서 한 번씩 명확히 안내하고 같은 문장을 반복하지 마세요. 신청기간과 운영기간은 구분하세요. 여러 신청 경로가 대안인지 순차 절차인지 구분하고, 없는 혜택은 생략하세요. HTML 선택 시 외부 자원·스크립트 없는 본문 조각만 제공하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [참여 방법과 유의사항 안내]\n주제: [작가 초청강연]\n사업명·학년도·학기: [2026학년도 2학기 / 사업명 없으면 해당 없음]\n핵심 내용: [확정된 운영 내용 입력]\n신청기간: [실제 신청기간 또는 해당 없음]\n운영기간·일시: [실제 운영기간·행사일시·적용기간]\n신청·이용 방법: [실제 메뉴 경로 또는 단계별 절차]\n강연자·내용: [확정된 강연자와 강연 주제]\n장소·정원: [교육실 / 실제 정원 입력]\n유의사항: [확인된 제한·예외·변경사항]\n문의처: [담당 부서 / 실제 전화·이메일]\n출력형식: [텍스트 또는 HTML 본문 조각]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "이용자 만족도 조사 공지", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홈페이지 공지를 작성해 주세요. 제목 후보 3개 → 게시용 본문(한 문장 소개 → 개요 → 참여 방법 → 유의사항 → 문의처) → 담당자 확인사항 순서로 출력하세요. 대상과 기간을 개요에서 한 번씩 명확히 안내하고 같은 문장을 반복하지 마세요. 신청기간과 운영기간은 구분하세요. 여러 신청 경로가 대안인지 순차 절차인지 구분하고, 없는 혜택은 생략하세요. HTML 선택 시 외부 자원·스크립트 없는 본문 조각만 제공하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [참여 방법과 유의사항 안내]\n주제: [도서관 이용자 만족도 조사]\n사업명·학년도·학기: [2026학년도 2학기 / 사업명 없으면 해당 없음]\n핵심 내용: [확정된 운영 내용 입력]\n신청기간: [실제 신청기간 또는 해당 없음]\n운영기간·일시: [실제 운영기간·행사일시·적용기간]\n신청·이용 방법: [실제 메뉴 경로 또는 단계별 절차]\n조사 내용: [자료·시설·서비스 만족도]\n설문 URL: [실제 설문 링크]\n참여혜택·선정조건: [없음]\n유의사항: [확인된 제한·예외·변경사항]\n문의처: [담당 부서 / 실제 전화·이메일]\n출력형식: [텍스트 또는 HTML 본문 조각]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "학기 중·방학 운영시간 공지", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홈페이지 공지를 작성해 주세요. 제목 후보 3개 → 게시용 본문(한 문장 소개 → 적용기간 → 공간별 운영시간 표 → 변경사항 → 유의사항 → 문의처) → 담당자 확인사항 순서로 출력하세요. 대상과 기간을 개요에서 한 번씩 명확히 안내하고 같은 문장을 반복하지 마세요. 신청기간과 운영기간은 구분하세요. 여러 신청 경로가 대안인지 순차 절차인지 구분하고, 없는 혜택은 생략하세요. HTML 선택 시 외부 자원·스크립트 없는 본문 조각만 제공하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [참여 방법과 유의사항 안내]\n주제: [방학 중 운영시간]\n사업명·학년도·학기: [2026학년도 2학기 / 사업명 없으면 해당 없음]\n핵심 내용: [확정된 운영 내용 입력]\n신청기간: [실제 신청기간 또는 해당 없음]\n운영기간·일시: [실제 운영기간·행사일시·적용기간]\n신청·이용 방법: [실제 메뉴 경로 또는 단계별 절차]\n공간별 운영시간: [자료실·열람실의 실제 평일·주말 운영시간]\n휴관일·예외: [실제 휴관일 입력]\n유의사항: [확인된 제한·예외·변경사항]\n문의처: [담당 부서 / 실제 전화·이메일]\n출력형식: [텍스트 또는 HTML 본문 조각]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "AI 추천·전자자료 서비스 공지", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홈페이지 공지를 작성해 주세요. 제목 후보 3개 → 게시용 본문(한 문장 소개 → 개요 → 참여 방법 → 유의사항 → 문의처) → 담당자 확인사항 순서로 출력하세요. 대상과 기간을 개요에서 한 번씩 명확히 안내하고 같은 문장을 반복하지 마세요. 신청기간과 운영기간은 구분하세요. 여러 신청 경로가 대안인지 순차 절차인지 구분하고, 없는 혜택은 생략하세요. HTML 선택 시 외부 자원·스크립트 없는 본문 조각만 제공하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [참여 방법과 유의사항 안내]\n주제: [전자자료 서비스 이용 안내]\n사업명·학년도·학기: [2026학년도 2학기 / 사업명 없으면 해당 없음]\n핵심 내용: [확정된 운영 내용 입력]\n신청기간: [실제 신청기간 또는 해당 없음]\n운영기간·일시: [실제 운영기간·행사일시·적용기간]\n신청·이용 방법: [실제 메뉴 경로 또는 단계별 절차]\n서비스 내용: [실제 제공 기능과 자료 범위]\n인증·이용제한: [실제 로그인·교외접속·이용제한 조건]\n유의사항: [확인된 제한·예외·변경사항]\n문의처: [담당 부서 / 실제 전화·이메일]\n출력형식: [텍스트 또는 HTML 본문 조각]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "시스템 점검·휴관 공지", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홈페이지 공지를 작성해 주세요. 제목 후보 3개 → 게시용 본문(한 문장 소개 → 점검일시 → 제한 범위 → 대체 이용방법 → 정상화 예정·유의사항 → 문의처) → 담당자 확인사항 순서로 출력하세요. 대상과 기간을 개요에서 한 번씩 명확히 안내하고 같은 문장을 반복하지 마세요. 신청기간과 운영기간은 구분하세요. 여러 신청 경로가 대안인지 순차 절차인지 구분하고, 없는 혜택은 생략하세요. HTML 선택 시 외부 자원·스크립트 없는 본문 조각만 제공하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [참여 방법과 유의사항 안내]\n주제: [도서관 시스템 점검]\n사업명·학년도·학기: [2026학년도 2학기 / 사업명 없으면 해당 없음]\n핵심 내용: [확정된 운영 내용 입력]\n신청기간: [실제 신청기간 또는 해당 없음]\n운영기간·일시: [실제 운영기간·행사일시·적용기간]\n신청·이용 방법: [실제 메뉴 경로 또는 단계별 절차]\n제한 범위: [통합검색과 자료 예약]\n대체 이용방법: [확인된 대체 방법]\n정상화 예정: [실제 예정 시각]\n유의사항: [확인된 제한·예외·변경사항]\n문의처: [담당 부서 / 실제 전화·이메일]\n출력형식: [텍스트 또는 HTML 본문 조각]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "수업자료 신청 공지 입력 예시", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홈페이지 공지를 작성해 주세요. 제목 후보 3개 → 게시용 본문(한 문장 소개 → 개요 → 참여 방법 → 유의사항 → 문의처) → 담당자 확인사항 순서로 출력하세요. 대상과 기간을 개요에서 한 번씩 명확히 안내하고 같은 문장을 반복하지 마세요. 신청기간과 운영기간은 구분하세요. 여러 신청 경로가 대안인지 순차 절차인지 구분하고, 없는 혜택은 생략하세요. HTML 선택 시 외부 자원·스크립트 없는 본문 조각만 제공하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [참여 방법과 유의사항 안내]\n주제: [지정도서 및 e-Reserve 신청]\n사업명·학년도·학기: [2026학년도 2학기 / 사업명 없으면 해당 없음]\n핵심 내용: [확정된 운영 내용 입력]\n신청기간: [실제 신청기간 또는 해당 없음]\n운영기간·일시: [실제 운영기간·행사일시·적용기간]\n신청·이용 방법: [실제 메뉴 경로 또는 단계별 절차]\n자료 범위: [실제 신청 가능 자료]\n이용·대출조건: [우리 도서관의 확인된 정책]\n처리기간·유의사항: [확인된 정책 입력]\n유의사항: [확인된 제한·예외·변경사항]\n문의처: [담당 부서 / 실제 전화·이메일]\n출력형식: [텍스트 또는 HTML 본문 조각]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "공지 유형별 입력 템플릿", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 홈페이지 공지를 작성해 주세요. 제목 후보 3개 → 게시용 본문(한 문장 소개 → 개요 → 참여 방법 → 유의사항 → 문의처) → 담당자 확인사항 순서로 출력하세요. 대상과 기간을 개요에서 한 번씩 명확히 안내하고 같은 문장을 반복하지 마세요. 신청기간과 운영기간은 구분하세요. 여러 신청 경로가 대안인지 순차 절차인지 구분하고, 없는 혜택은 생략하세요. HTML 선택 시 외부 자원·스크립트 없는 본문 조각만 제공하세요.\n\n입력 정보\n대상: [학부 재학생]\n목적: [참여 방법과 유의사항 안내]\n주제: [도서관 프로그램 운영 안내]\n사업명·학년도·학기: [2026학년도 2학기 / 사업명 없으면 해당 없음]\n핵심 내용: [확정된 운영 내용 입력]\n신청기간: [실제 신청기간 또는 해당 없음]\n운영기간·일시: [실제 운영기간·행사일시·적용기간]\n신청·이용 방법: [실제 메뉴 경로 또는 단계별 절차]\n유의사항: [확인된 제한·예외·변경사항]\n문의처: [담당 부서 / 실제 전화·이메일]\n출력형식: [텍스트 또는 HTML 본문 조각]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}, {"title": "공지 게시 전 검수 프롬프트", "cat": "notice", "prompt": "당신은 대학도서관 실무를 지원하는 전문 사서입니다. 아래 정보를 바탕으로 문안을 검수해 주세요. 사실·일시·조건·링크·개인정보·서지정보·과장·문의처를 점검하고 문제 / 위험도 / 대체 문장 / 담당자 확인 여부를 표로 정리하세요. 확인할 근거가 없는 항목은 검증 필요로 표시하고 새 사실은 추가하지 마세요.\n\n입력 정보\n대상: [도서관 이용자]\n목적: [게시 전 오류와 이용자 오해 예방]\n주제: [홈페이지 공지 검수]\n검토할 문안: [검수할 문안 전체 입력]\n확인 가능한 원자료: [실제 규정·운영계획·담당자 확인 내용]\n\n작성 원칙\n입력한 사실만 사용하세요. 제공되지 않은 날짜·금액·규정·연락처·URL은 지어내지 말고 확인 필요로 표시하세요. 개인정보는 제외하고, 정중하고 명확한 문어체로 작성하세요."}];
+const dlg=document.getElementById('promptDialog'), preview=document.getElementById('promptPreview');let current=0, edits={},mode='example';
+// 사용자 수정·추가 프롬프트를 브라우저에 저장합니다. (같은 브라우저에서 다시 열어도 유지)
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbywymy0Ffm1bpj3cq3T5t6RnjWkK1hfKzkRPvSZw7dfz893i_cUHrTN1SYjkob5V5ruyg/exec';
+const cloudSeen=new Set();
+function cloudKey(title,prompt){return title+'||'+prompt;}
+function syncFromCloud(){
+  fetch(SCRIPT_URL).then(r=>r.json()).then(rows=>{
+    if(!Array.isArray(rows))return;
+    rows.forEach(row=>{
+      const key=cloudKey(row.title,row.prompt);
+      if(cloudSeen.has(key))return;
+      cloudSeen.add(key);
+      const index=promptCatalog.length;
+      const item={title:row.title,cat:row.cat||'doc',prompt:row.prompt,_cloudId:row.index};
+      promptCatalog.push(item);
+      appendPromptCard(item,index,true);
+      addFavoriteButtonSafe(index);
+    });
+  }).catch(err=>console.warn('클라우드 동기화 실패',err));
+}
+function addFavoriteButtonSafe(index){/* placeholder in case favorites feature not present */}
+const STORAGE_KEY='libraryPromptFieldGuide.v1';
+function loadSavedData(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch(e){return {}}}
+function saveSavedData(data){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}catch(e){console.warn('저장 공간을 사용할 수 없습니다.',e)}}
+const savedData=loadSavedData();
+if(savedData.edits){promptCatalog.forEach((item,i)=>{if(savedData.edits[item.title])item.prompt=savedData.edits[item.title];});}
+if(savedData.settings){Object.keys(savedData.settings).forEach(k=>{const i=Number(k),v=savedData.settings[k];if(promptCatalog[i]){if(v.title)promptCatalog[i].title=v.title;if(v.deleted)promptCatalog[i]._deleted=true;}});}
+function appendPromptCard(item,index,insertByCategory=true){const card=document.createElement('div');card.className='card cover-card';card.dataset.cat=item.cat;card.dataset.index=index;card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label',item.title+' 프롬프트 열기');const art=document.createElement('div');art.className='cover-art';art.setAttribute('aria-hidden','true');art.textContent={doc:'▤',service:'◉',promo:'✦',data:'▥',notice:'◈'}[item.cat]||'◈';const h=document.createElement('h3');h.textContent=item.title;card.append(art,h);addSettingsButton(card,index);card.onclick=()=>openPrompt(index);card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPrompt(index);}};const grid=document.getElementById('cardGrid-'+item.cat)||document.querySelector('.cat-section[data-cat="'+item.cat+'"] .grid');if(!grid)return;if(insertByCategory){const same=[...grid.querySelectorAll('.cover-card')].filter(c=>c.dataset.cat===item.cat);if(same.length)same[same.length-1].after(card);else grid.append(card);}else grid.append(card);}
+function addSettingsButton(card,index){const gear=document.createElement('button');gear.className='settings-gear';gear.type='button';gear.textContent='⚙';gear.title='설정';gear.setAttribute('aria-label','설정: '+promptCatalog[index].title);gear.onclick=e=>{e.stopPropagation();openSettings(index);};card.append(gear);if(promptCatalog[index]?._deleted)card.remove();}
+function decorateExistingCards(){document.querySelectorAll('.cover-card').forEach(card=>{const index=Number(card.dataset.index);if(!promptCatalog[index])return;if(promptCatalog[index]._deleted){card.remove();return;}const h=card.querySelector('h3');if(h)h.textContent=promptCatalog[index].title;addSettingsButton(card,index);});}
+if(Array.isArray(savedData.custom)){savedData.custom.forEach(item=>{const index=promptCatalog.length;promptCatalog.push(item);appendPromptCard(item,index,true);});}
+decorateExistingCards();
+applyFilter(document.querySelector('.chip.active')?.dataset.filter||'all');
+syncFromCloud();
+setInterval(syncFromCloud,25000);
+let settingsIndex=0;const settingsDlg=document.getElementById('settingsDialog');
+function openSettings(index){settingsIndex=index;document.getElementById('settingsTitleInput').value=promptCatalog[index].title;lockBodyScroll();settingsDlg.showModal();}
+function closeSettings(){settingsDlg.close();}
+settingsDlg.addEventListener('close',unlockBodyScroll);
+document.getElementById('closeSettings').onclick=closeSettings;document.getElementById('cancelSettings').onclick=closeSettings;
+document.getElementById('saveSettings').onclick=()=>{const title=document.getElementById('settingsTitleInput').value.trim();if(!title){alert('제목을 입력해주세요.');return;}promptCatalog[settingsIndex].title=title;const data=loadSavedData();data.settings=data.settings||{};data.settings[settingsIndex]={...(data.settings[settingsIndex]||{}),title,deleted:false};saveSavedData(data);document.querySelectorAll('.cover-card').forEach(c=>{if(Number(c.dataset.index)===settingsIndex){const h=c.querySelector('h3');if(h)h.textContent=title;c.setAttribute('aria-label',title+' 프롬프트 열기');}});closeSettings();};
+document.getElementById('deletePrompt').onclick=()=>{if(!confirm('이 프롬프트를 삭제할까요?'))return;const item=promptCatalog[settingsIndex];item._deleted=true;const data=loadSavedData();data.settings=data.settings||{};data.settings[settingsIndex]={...(data.settings[settingsIndex]||{}),title:item.title,deleted:true};saveSavedData(data);document.querySelectorAll('.cover-card').forEach(c=>{if(Number(c.dataset.index)===settingsIndex)c.remove();});if(item._cloudId!=null){fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'delete',index:item._cloudId})}).catch(err=>console.warn('클라우드 삭제 실패',err));}closeSettings();};
+const headers=new Set(['참고하는 구성','입력 정보 — 대괄호를 실제 정보로 바꾸세요','사실 관리','제목 작성','본문 구성','문체와 가독성','HTML 출력 선택 시','출력 순서','이번 공지 입력 템플릿','확인 필요','확인 필요: 항목명','확인 필요: 정보 상충','확인 필요 - 서지정보 입력 후 재작성']);
+function valueFor(token,context){return token;}
+function fieldsFor(text){const re=/\[([^\]\n]+)\]/g;const fields=[];let m;while((m=re.exec(text))){const token=m[1];if(headers.has(token)||token.startsWith('확인 필요'))continue;
+const line=text.slice(Math.max(0,text.lastIndexOf('\n',m.index)+1),m.index);let label=line.replace(/\[[^\]]*\]/g,'').replace(/^[\s:：/·-]+|[\s:：/·-]+$/g,'').trim();
+if(!label||label.length>45)label=token.replace(/^예[:：]?\s*/,'').split('/')[0];
+if(/^입력|^내용$|^있다면|^확인된/.test(label))label='세부 내용';
+fields.push({key:String(m.index),label,example:valueFor(token,line),token});}return fields;}
+function render(which){document.querySelector('#promptDialog .modal-tools').hidden=false;document.getElementById('templateEditorWrap').hidden=true;document.getElementById('editTemplate').hidden=which!=='example';document.getElementById('bottomCopy').hidden=false;mode=which;preview.replaceChildren();document.getElementById('bottomCopy').textContent=which==='example'?'예시 복사하기':'복사하기';document.getElementById('viewOriginal').setAttribute('aria-pressed',which==='example');document.getElementById('viewExample').setAttribute('aria-pressed',which==='input');document.getElementById('usageNote').hidden=which!=='example';
+const text=promptCatalog[current].prompt;if(which==='example'){preview.textContent=exampleText();return;}
+const re=/\[([^\]\n]+)\]/g;let last=0,m;
+while((m=re.exec(text))){preview.append(document.createTextNode(text.slice(last,m.index)));const token=m[1];
+if(headers.has(token)||token.startsWith('확인 필요')){preview.append(document.createTextNode(m[0]));}
+else{const key=String(m.index);const line=text.slice(Math.max(0,text.lastIndexOf('\n',m.index)+1),m.index);
+const field=document.createElement('span');field.className='inline-field';field.append(document.createTextNode('['));
+const input=document.createElement('textarea');input.className='inline-entry';input.rows=1;input.value=edits[key]??'';input.placeholder=valueFor(token,line);input.setAttribute('aria-label',line.trim()||token);
+function resize(){const chars=Array.from(input.value).reduce((n,c)=>n+(c.charCodeAt(0)>255?1:0.55),0);input.style.width=Math.max(10,chars+1)+'em';input.style.height='auto';input.style.height=Math.max(30,input.scrollHeight)+'px';}
+input.addEventListener('input',()=>{edits[key]=input.value;resize();});input.style.width='10em';field.append(input,document.createTextNode(']'));preview.append(field);}
+last=re.lastIndex;}
+preview.append(document.createTextNode(text.slice(last)));}
+function exampleText(){const text=promptCatalog[current].prompt;return text.replace(/\[([^\]\n]+)\]/g,(whole,token,offset)=>{if(headers.has(token)||token.startsWith('확인 필요'))return whole;return '['+valueFor(token,text.slice(Math.max(0,text.lastIndexOf('\n',offset)),offset))+']';});}
+function enteredText(){return promptCatalog[current].prompt.replace(/\[([^\]\n]+)\]/g,(whole,token,offset)=>{if(headers.has(token)||token.startsWith('확인 필요'))return whole;return '['+((edits[String(offset)]||'').trim()||'확인 필요')+']';});}
+function lockBodyScroll(){const sw=window.innerWidth-document.documentElement.clientWidth;document.body.style.overflow='hidden';if(sw>0)document.body.style.paddingRight=sw+'px';}
+function unlockBodyScroll(){document.body.style.overflow='';document.body.style.paddingRight='';}
+function openPrompt(i){current=i;edits={};document.getElementById('promptTitle').textContent=promptCatalog[i].title;document.getElementById('copyStatus').textContent='';render('example');lockBodyScroll();dlg.showModal();}
+dlg.addEventListener('close',unlockBodyScroll);
+document.querySelectorAll('.cover-card').forEach(card=>{card.addEventListener('click',()=>openPrompt(Number(card.dataset.index)));card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPrompt(Number(card.dataset.index));}});});
+document.getElementById('closePrompt').onclick=()=>dlg.close();dlg.addEventListener('click',e=>{if(e.target===dlg){const r=dlg.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dlg.close();}});
+document.getElementById('viewOriginal').onclick=()=>render('example');document.getElementById('viewExample').onclick=()=>render('input');
+async function copyText(text){text=stripBrackets(text);try{await navigator.clipboard.writeText(text);}catch(e){const t=document.createElement('textarea');t.value=text;dlg.append(t);t.select();const ok=document.execCommand('copy');t.remove();if(!ok){render(mode);return;}}}
+document.getElementById('bottomCopy').onclick=()=>copyText(mode==='example'?exampleText():enteredText());
+
+const editButton=document.getElementById('editTemplate');
+editButton.onclick=()=>{document.querySelector('#promptDialog .modal-tools').hidden=true;document.getElementById('templateEditor').value=promptCatalog[current].prompt;document.getElementById('templateEditorWrap').hidden=false;preview.hidden=true;document.getElementById('bottomCopy').hidden=true;editButton.hidden=true;};
+document.getElementById('cancelTemplateEdit').onclick=()=>{preview.hidden=false;render('example');};
+document.getElementById('saveTemplateEdit').onclick=()=>{const value=document.getElementById('templateEditor').value;if(!value.trim()){document.getElementById('copyStatus').textContent='프롬프트 내용을 입력하세요.';return;}const left=(value.match(/\[/g)||[]).length,right=(value.match(/\]/g)||[]).length;if(left!==right){document.getElementById('copyStatus').textContent='대괄호의 여는 기호와 닫는 기호 수를 맞춰 주세요.';return;}if(!window.confirm('이대로 저장할까요?'))return;promptCatalog[current].prompt=value;const data=loadSavedData();data.edits=data.edits||{};data.edits[promptCatalog[current].title]=value;saveSavedData(data);edits={};preview.hidden=false;render('example');document.getElementById('copyStatus').textContent='저장했습니다. 다음에 다시 열어도 유지됩니다.';};
+// Leave edit mode cleanly when switching tabs or opening another card.
+const oldRender=render;render=function(which){preview.hidden=false;oldRender(which);};
+</script><dialog aria-labelledby="addPromptTitle" id="addPromptDialog"><div class="modal-head"><h2 id="addPromptTitle">프롬프트 추가하기</h2><button aria-label="닫기" id="closeAddPrompt">✕</button></div><form class="modal-body" id="addPromptForm"><label>배치할 분류<select id="newPromptCategory" required=""><option value="doc">문서작업</option><option value="service">이용자 서비스</option><option value="promo">홍보 · 콘텐츠</option><option value="data">데이터</option><option value="notice">공지사항</option></select></label><label>프롬프트 제목<input id="newPromptTitle" maxlength="100" placeholder="예: 신입생 도서관 교육 안내" required=""/></label><label>프롬프트 내용<textarea id="newPromptBody" required="" rows="12"></textarea></label><p class="add-help">입력 항목은 항목명: [예시] 형식으로 작성하세요. 추가한 항목은 입력하기에서 입력칸으로 표시됩니다.</p><p id="addPromptStatus" role="status"></p><div class="editor-actions"><button id="cancelAddPrompt" type="button">취소</button><button type="submit">추가하기</button></div></form></dialog><script>
+const addDlg=document.getElementById('addPromptDialog');
+const newPromptSample='당신은 대학도서관 전문 사서입니다. 아래 정보를 바탕으로 안내문을 작성해 주세요.\n\n대상: [신입생]\n목적: [도서관 이용 교육 참여 안내]\n주제: [신입생 도서관 교육]\n기간: [실제 교육일시 입력]\n신청 방법: [실제 신청 경로 입력]\n문의처: [담당 부서와 실제 연락처]\n\n제목 → 소개 → 참여 방법 → 유의사항 → 문의처 순서로 작성하세요. 확인되지 않은 정보는 지어내지 마세요.';
+document.getElementById('addPromptButton').onclick=()=>{document.getElementById('addPromptForm').reset();document.getElementById('newPromptBody').value=newPromptSample;document.getElementById('addPromptStatus').textContent='';lockBodyScroll();addDlg.showModal();};
+addDlg.addEventListener('close',unlockBodyScroll);
+document.getElementById('closeAddPrompt').onclick=()=>addDlg.close();document.getElementById('cancelAddPrompt').onclick=()=>addDlg.close();
+document.getElementById('addPromptForm').onsubmit=e=>{e.preventDefault();const title=document.getElementById('newPromptTitle').value.trim(),prompt=document.getElementById('newPromptBody').value.trim(),cat=document.getElementById('newPromptCategory').value;if(!title||!prompt)return;const opens=(prompt.match(/\[/g)||[]).length,closes=(prompt.match(/\]/g)||[]).length;if(opens!==closes){document.getElementById('addPromptStatus').textContent='대괄호의 여는 기호와 닫는 기호를 맞춰 주세요.';return;}
+const index=promptCatalog.length;const newItem={title,prompt,cat};promptCatalog.push(newItem);cloudSeen.add(cloudKey(title,prompt));const data=loadSavedData();data.custom=data.custom||[];data.custom.push(newItem);saveSavedData(data);const card=document.createElement('div');card.className='card cover-card';card.dataset.cat=cat;card.dataset.index=index;card.tabIndex=0;card.setAttribute('role','button');card.setAttribute('aria-label',title+' 프롬프트 열기');const art=document.createElement('div');art.className='cover-art';art.setAttribute('aria-hidden','true');art.textContent={doc:'▤',service:'◉',promo:'✦',data:'▥',notice:'◈'}[cat];const h=document.createElement('h3');h.textContent=title;card.append(art,h);card.onclick=()=>openPrompt(index);card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPrompt(index);}};(document.getElementById('cardGrid-'+cat)||document.querySelector('.cat-section[data-cat="'+cat+'"] .grid')).append(card);addDlg.close();const chip=document.querySelector('.chip[data-filter="'+cat+'"]');if(chip)chip.click();card.scrollIntoView({behavior:'smooth',block:'center'});
+fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'add',title,cat,prompt})}).then(r=>r.json()).then(res=>{newItem._cloudId=res.index;}).catch(err=>console.warn('클라우드 저장 실패',err));};
+</script></body>
+</html>
