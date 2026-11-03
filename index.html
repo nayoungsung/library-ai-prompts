@@ -77,7 +77,8 @@ body,p,li,h1,h2,h3,h4{word-break:keep-all;overflow-wrap:break-word;}
     font-weight:800;letter-spacing:-0.03em;margin:0 0 18px;
   }
   h1.headline .accent{color:var(--accent);}
-  .sub{color:var(--text-dim);font-size:17px;max-width:620px;margin:0 auto 34px;}
+  .sub{color:var(--text-dim);font-size:17px;max-width:720px;margin:0 auto 34px;white-space:nowrap;}
+@media(max-width:760px){.sub{white-space:normal;max-width:92vw;}}
   .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
   .book-art{position:relative;width:170px;height:118px;margin:0 auto 26px;}
   .book-art-glow{position:absolute;inset:-30px;background:radial-gradient(circle,rgba(28,184,174,.25),transparent 68%);filter:blur(2px);}
@@ -105,6 +106,12 @@ body,p,li,h1,h2,h3,h4{word-break:keep-all;overflow-wrap:break-word;}
     padding:14px 26px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;
   }
   .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-soft{
+    background:var(--bg-soft);border:1px solid var(--border);color:var(--accent-strong);
+    padding:14px 26px;border-radius:10px;font-weight:600;font-size:15px;cursor:pointer;
+    transition:background .2s, transform .15s;
+  }
+  .btn-soft:hover{background:var(--tag-notice-bg);transform:translateY(-1px);}
 
   .stats{display:flex;justify-content:center;gap:48px;margin-top:56px;flex-wrap:wrap;}
   .stat b{display:block;font-size:26px;color:var(--accent);}
@@ -293,11 +300,10 @@ body,p,li,h1,h2,h3,h4{word-break:keep-all;overflow-wrap:break-word;}
 </div>
 <span class="eyebrow">📚 FIELD GUIDE · LIBRARY AI PROMPTS</span>
 <h1 class="headline">사서 업무에 바로 쓰는<br/><span class="accent">AI 프롬프트 아카이브</span></h1>
-<p class="sub">복사해서 바로 쓰고, 검토하고, 다시 쓸 수 있는 대학도서관 실무 프롬프트 모음입니다. 행정문서부터 이용자 응대, 홍보 콘텐츠, 데이터 분석, 공지사항 작성까지 상황별 템플릿을 제공합니다.</p>
+<p class="sub">복사해서 바로 쓸 수 있는 대학도서관 실무 프롬프트 모음입니다.<br>행정문서부터 이용자 응대, 홍보 콘텐츠, 데이터 분석, 공지사항 작성까지 상황별 템플릿을 제공합니다.</p>
 <div class="hero-actions">
 <a class="btn-primary" href="#gallery" id="browsePromptsBtn">프롬프트 둘러보기</a>
-<a class="btn-ghost" href="#" id="showGuideBtn">사용 방법 보기</a>
-<button class="btn-ghost" id="addPromptButtonHero" type="button">+ 프롬프트 추가하기</button>
+<button class="btn-soft" id="addPromptButtonHero" type="button">+ 프롬프트 추가하기</button>
 </div>
 </div>
 </section>
@@ -335,7 +341,7 @@ body,p,li,h1,h2,h3,h4{word-break:keep-all;overflow-wrap:break-word;}
 <span class="level-icon" style="color:var(--tag-notice);background:var(--tag-notice-bg)">◈</span>
 <span class="level-eyebrow">AREA 5 · 공지사항</span>
 <span class="level-title">홈페이지 공지 전반</span>
-<span class="level-desc">책나래 · 교육 · 행사 등 공지 유형별 템플릿</span>
+<span class="level-desc">이벤트 · 행사 등 공지 유형별 템플릿</span>
 </button>
 </div>
 <div class="filter-bar" id="filterBar">
@@ -356,7 +362,7 @@ body,p,li,h1,h2,h3,h4{word-break:keep-all;overflow-wrap:break-word;}
 <div class="cat-section" data-cat="doc" id="cat-doc">
 <div class="cat-head">
 <span class="section-label" style="color:var(--tag-doc)">AREA 1 · 문서작업</span>
-<h3>행정문서와 기획안, 근거 없는 내용 없이 초안부터</h3>
+<h3>행정문서와 기획안 초안부터</h3>
 <p class="section-desc">공문·보고서·프로그램 기획·자료 큐레이션까지, 입력한 사실만으로 구성된 문서 초안을 만듭니다.</p>
 <ul class="feature-list">
 <li>목적·대상·핵심 내용을 입력하면 제목부터 문의처까지 순서를 갖춘 문서로 정리</li>
@@ -394,7 +400,7 @@ body,p,li,h1,h2,h3,h4{word-break:keep-all;overflow-wrap:break-word;}
 <div class="cat-section" data-cat="promo" id="cat-promo">
 <div class="cat-head">
 <span class="section-label" style="color:var(--tag-promo)">AREA 3 · 홍보 · 콘텐츠</span>
-<h3>대출로 이어지는 SNS 문구와 전시 큐레이션</h3>
+<h3>SNS 문구와 전시 큐레이션</h3>
 <p class="section-desc">채널에 맞는 제목·본문·해시태그를 한 번에 생성하되, 도서 서지정보와 혜택은 창작하지 않습니다.</p>
 <ul class="feature-list">
 <li>제목 후보 3개와 행동 유도 문구, 해시태그까지 한 세트로 출력</li>
@@ -413,7 +419,7 @@ body,p,li,h1,h2,h3,h4{word-break:keep-all;overflow-wrap:break-word;}
 <div class="cat-section" data-cat="data" id="cat-data">
 <div class="cat-head">
 <span class="section-label" style="color:var(--tag-data)">AREA 4 · 데이터</span>
-<h3>실적 분석과 AI 결과물 검수, 추측 대신 근거로</h3>
+<h3>실적 분석과 AI 결과물 검수</h3>
 <p class="section-desc">통계 수치를 바탕으로 한 분석 보고와, 게시 전 문안의 사실·개인정보·링크를 점검합니다.</p>
 <ul class="feature-list">
 <li>핵심 수치 → 증감 계산 → 관찰된 패턴 → 해석의 한계 순으로 과장 없이 정리</li>
@@ -432,7 +438,7 @@ body,p,li,h1,h2,h3,h4{word-break:keep-all;overflow-wrap:break-word;}
 <div class="cat-section" data-cat="notice" id="cat-notice">
 <div class="cat-head">
 <span class="section-label" style="color:var(--tag-notice)">AREA 5 · 공지사항</span>
-<h3>책나래 · 교육 · 행사까지, 공지 유형별 구조화 템플릿</h3>
+<h3>이벤트 · 행사까지, 공지 유형별 구조화 템플릿</h3>
 <p class="section-desc">홈페이지 공지에 자주 쓰는 11가지 상황별 템플릿입니다. 제목 후보·본문·담당자 확인사항 순서로 출력됩니다.</p>
 <ul class="feature-list">
 <li>신청기간과 운영기간을 분리해서 안내해 이용자 혼선을 줄임</li>
@@ -717,7 +723,7 @@ body,p,li,h1,h2,h3,h4{word-break:keep-all;overflow-wrap:break-word;}
   });
 
   // 사용 방법 보기: 탭을 슬라이드 전환하며 이동
-  document.getElementById('showGuideBtn').addEventListener('click', function(e){
+  (document.getElementById('showGuideBtn')||{addEventListener(){}}).addEventListener('click', function(e){
     e.preventDefault();
     showTab('guide');
   });
